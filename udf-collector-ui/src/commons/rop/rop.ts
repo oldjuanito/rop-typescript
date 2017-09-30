@@ -42,8 +42,26 @@ export class RopBind<A, ErrType> {
         const nextResult = this.thenMap(nextFunc)
         return new RopBind(nextResult)
     }
+    pssIfTrue(nextFunc: (input: A) => boolean, errMsg: string) {
+        const nextResult = this.thenPassIfTrue(nextFunc, errMsg)
+        return new RopBind(nextResult)
+    }
     getResult() {
         return this.firstResult
+    }
+    private thenPassIfTrue<T>(nextFunc: (input: A) => boolean, errMsg: string) {
+        const firstResult = this.firstResult
+        switch (firstResult.kind) {
+            case GOOD :
+                const evalRes = nextFunc(firstResult.payload)
+                const secondRes = evalRes ? pass(firstResult.payload) : fail({ errorDescription: errMsg})
+                return secondRes
+            case BAD :
+                return (firstResult)
+            default:
+                return (firstResult)
+
+        }
     }
     private thenMap<T>(nextFunc: (input: A) => T) {
         const firstResult = this.firstResult
@@ -72,7 +90,7 @@ export class RopBind<A, ErrType> {
         }
     }
 }
-export function start<A, ErrType>(firstResult: RopResult<A, ErrType>) {
+export function startTrack<A, ErrType>(firstResult: RopResult<A, ErrType>) {
     return new RopBind(firstResult)
     // return {
     //     then: function (nextFunc: (input: A) => RopResult<T, ErrType>) {
@@ -160,7 +178,7 @@ export module Validations {
         //     start(tryNumber(subject))
         //     .then(curriedIsWithinRange);
         const result =
-            start(tryNumber(subject))
+            startTrack(tryNumber(subject))
             .then(curriedIsWithinRange)
             .then(curriedIsWithinRange)
             .getResult()
