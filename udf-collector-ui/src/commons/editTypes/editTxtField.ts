@@ -6,22 +6,29 @@ export interface EditTextFieldDescriptor<T> {
     fromRendition: (txtVal: string) => RopResult<T, PropertyError>
 }
 export interface EditTextFieldCurrVal {
+    label: string
     currTxtVal: string
     currErrors: string[]
 }
 
+export function emptyEditTextFieldCurrVal(label: string): EditTextFieldCurrVal { 
+    return {
+    label,
+    currTxtVal: '',
+    currErrors: ['']
+  }}
 export function applyTextValue<T>(descriptor: EditTextFieldDescriptor<T>, newVal: string) {
     const result = descriptor.fromRendition(newVal)
     switch (result.kind) {
         case GOOD :
-            const goodCurrVal: EditTextFieldCurrVal = { currTxtVal: newVal, currErrors: []}
+            const goodCurrVal: EditTextFieldCurrVal = { currTxtVal: newVal, currErrors: [], label: descriptor.label}
             return goodCurrVal
         case BAD :
             const badCurrVal: EditTextFieldCurrVal = { 
-                currTxtVal: newVal, currErrors: getErrorsAsString([result.error])}
+                currTxtVal: newVal, currErrors: getErrorsAsString([result.error]), label: descriptor.label}
             return badCurrVal
         default:
-            const defaultCurrVal: EditTextFieldCurrVal = { currTxtVal: newVal, currErrors: []}
+            const defaultCurrVal: EditTextFieldCurrVal = { currTxtVal: newVal, currErrors: [], label: descriptor.label}
             return defaultCurrVal
     }
 }

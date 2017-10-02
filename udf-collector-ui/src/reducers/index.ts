@@ -1,5 +1,5 @@
 import { udfAction } from '../actions'
-import { StoreState } from '../types/index'
+import { StoreState } from '../types/storeType'
 import { INCREMENT_ENTHUSIASM, DECREMENT_ENTHUSIASM, FIELD_VAL_CHG } from '../constants/index'
 
 // import { RequiredPositiveMoney } from '../commons/types/requiredPositiveMoney'
@@ -20,8 +20,10 @@ function fieldChg(state: StoreState, action: udfAction): StoreState {
     switch (action.type) {
         case FIELD_VAL_CHG:
             const newEditSession = state.udfDescriptor(action.payload)
-            console.log(newEditSession)
-            return state
+            const newUdfValues = state.udfValues.map((u) => u.label === action.fieldName ? newEditSession : u)
+           
+            console.log(state.udfValues)
+            return { ...state, udfValues: newUdfValues }
         default:
             return state
     }

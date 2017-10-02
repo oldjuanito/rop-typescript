@@ -1,4 +1,4 @@
-const enum PrimitiveIdentifierConsts {
+export const enum PrimitiveIdentifierConsts {
     SingleLineText  = 'SingleLineText' ,
     Money  = 'Money',
     MultiLineText  = 'MultiLineText',

@@ -12,6 +12,7 @@ export interface DecrementEnthusiasm {
 export interface FieldValueChg {
     type: constants.FIELD_VAL_CHG
     payload: string
+    fieldName: string
 }
 
 // DU
@@ -30,10 +31,11 @@ export function decrementEnthusiasm(): DecrementEnthusiasm {
     }
 }
 
-export function fieldValueChg(newVal: string): FieldValueChg {
+export function fieldValueChg(fieldName: string, newVal: string): FieldValueChg {
     return {
         type: constants.FIELD_VAL_CHG,
-        payload: newVal
+        payload: newVal,
+        fieldName
     }
 }
 // There's clearly boilerplate here, https://www.npmjs.com/package/redux-actions

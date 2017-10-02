@@ -1,3 +1,5 @@
+import { EditTextFieldCurrVal } from '../commons/editTypes/editTxtField'
+import { UserDefinedFieldDefinition } from '../commons/types/userDefinedFieldDefinition'
 import * as React from 'react'
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons'
 
@@ -6,10 +8,34 @@ export interface Props {
     enthusiasmLevel?: number
     onIncrement?: () => void
     onDecrement?: () => void
-    onFieldValueChg: (newVal:  string) => void
+    onFieldValueChg: (label:  string, newVal:  string) => void
+    udfValues: EditTextFieldCurrVal[]
+    udfFields: UserDefinedFieldDefinition[]
   }
+function errorItem(err: string) {
+  return <li key={err} className="prop-error">{err}</li>
+}
+function errorList(errs: string[]) {
+  return (
+    <div className="prop-errors">
+      {errs.map(errorItem)}
+    </div>
+  )
+}
+function udfFieldView(onFieldValueChg: (label:  string, newVal:  string) => void, udfDef: UserDefinedFieldDefinition , 
+                      udfCurrVal: EditTextFieldCurrVal | undefined) {
+  const hasErrs = udfCurrVal && udfCurrVal.currErrors.length > 0
+  const errs = (udfCurrVal as EditTextFieldCurrVal).currErrors
+  return ( 
+      <div key={udfDef.label}>
+        <label>{udfDef.label}</label>
+        <input onChange={(evt) => onFieldValueChg(udfDef.label, evt.target.value)} /> 
+        {(hasErrs) ? errorList(errs) : <span />} 
+      </div>
+  )
 
-function Hello({ name, enthusiasmLevel = 1, onIncrement, onDecrement, onFieldValueChg }: Props) {
+}
+function Hello({ name, enthusiasmLevel = 1, onIncrement, onDecrement, onFieldValueChg, udfValues, udfFields }: Props) {
     if (enthusiasmLevel <= 0) {
       throw new Error('You could be a little more enthusiastic. :D')
     }
@@ -21,7 +47,8 @@ function Hello({ name, enthusiasmLevel = 1, onIncrement, onDecrement, onFieldVal
           Hello {name + getExclamationMarks(enthusiasmLevel)}
         </div>
         <ButtonComponent type="primary">Button</ButtonComponent>
-        <input onChange={(evt) => onFieldValueChg(evt.target.value)} />
+        {udfFields.map((def) => udfFieldView(onFieldValueChg, def, udfValues.find((u) => u.label === def.label) ) )}
+        
         <div>
           <button onClick={onDecrement}>-</button>
           <button onClick={onIncrement}>+</button>
