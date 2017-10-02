@@ -1,6 +1,5 @@
-import { Descriptors } from '../types/primitiveDescriptors'
-import { PropertyError, startTrack, RopResult, GOOD, BAD, getErrorsAsString } from '../rop/rop'
-import { RequiredShortAnswer } from '../types/requiredShortAnswer'
+// import { Descriptors } from '../types/primitiveDescriptors'
+import { PropertyError,  RopResult, GOOD, BAD, getErrorsAsString } from '../rop/rop'
 
 export interface EditTextFieldDescriptor<T> {
     label: string

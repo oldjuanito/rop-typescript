@@ -9,8 +9,13 @@ export interface DecrementEnthusiasm {
     type: constants.DECREMENT_ENTHUSIASM
 }
 
+export interface FieldValueChg {
+    type: constants.FIELD_VAL_CHG
+    payload: string
+}
+
 // DU
-export type EnthusiasmAction = IncrementEnthusiasm | DecrementEnthusiasm
+export type udfAction = IncrementEnthusiasm | DecrementEnthusiasm | FieldValueChg
 
 // COnstructors for DU??
 export function incrementEnthusiasm(): IncrementEnthusiasm {
@@ -25,5 +30,11 @@ export function decrementEnthusiasm(): DecrementEnthusiasm {
     }
 }
 
+export function fieldValueChg(newVal: string): FieldValueChg {
+    return {
+        type: constants.FIELD_VAL_CHG,
+        payload: newVal
+    }
+}
 // There's clearly boilerplate here, https://www.npmjs.com/package/redux-actions
 // so you should feel free to look into libraries like redux-actions once you've got the hang of things.

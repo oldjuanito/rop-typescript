@@ -28,9 +28,9 @@ function pass<T>(payload: T): Good<T> {
 function fail<T>(error: T): Bad<T> {
     return { kind: BAD, error }
 }
-function failWithDesc(error: string): Bad<PropertyError> {
-    return { kind: BAD, error: { errorDescription: error } }
-}
+// function failWithDesc(error: string): Bad<PropertyError> {
+//     return { kind: BAD, error: { errorDescription: error } }
+// }
 
 export class RopBind<A, ErrType> {
     constructor(private firstResult: RopResult<A, ErrType>) {

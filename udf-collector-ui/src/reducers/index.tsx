@@ -1,10 +1,11 @@
-import { EnthusiasmAction } from '../actions'
+import { udfAction } from '../actions'
 import { StoreState } from '../types/index'
-import { INCREMENT_ENTHUSIASM, DECREMENT_ENTHUSIASM } from '../constants/index'
-import { RequiredPositiveMoney } from '../commons/types/requiredPositiveMoney'
+import { INCREMENT_ENTHUSIASM, DECREMENT_ENTHUSIASM, FIELD_VAL_CHG } from '../constants/index'
 
-export function enthusiasm(state: StoreState, action: EnthusiasmAction): StoreState {
-    const myMoney = RequiredPositiveMoney.tryCreate(56)
+// import { RequiredPositiveMoney } from '../commons/types/requiredPositiveMoney'
+
+function enthusiasm(state: StoreState, action: udfAction): StoreState {
+    // const myMoney = RequiredPositiveMoney.tryCreate(56)
     switch (action.type) {
         case INCREMENT_ENTHUSIASM:
             return { ...state, enthusiasmLevel: state.enthusiasmLevel + 1 }
@@ -13,4 +14,19 @@ export function enthusiasm(state: StoreState, action: EnthusiasmAction): StoreSt
         default:
             return state
     }
+}
+function fieldChg(state: StoreState, action: udfAction): StoreState {
+    // const myMoney = RequiredPositiveMoney.tryCreate(56)
+    switch (action.type) {
+        case FIELD_VAL_CHG:
+            const newEditSession = state.udfDescriptor(action.payload)
+            console.log(newEditSession)
+            return state
+        default:
+            return state
+    }
+}
+
+export default function combineReducers(state: StoreState, action: udfAction): StoreState {
+    return fieldChg( enthusiasm(state, action), action)
 }
