@@ -1,4 +1,4 @@
-import { Validations, startTrack , bindIf } from '../rop/rop'
+import { Validations, startTrack , runValidateIf } from '../rop/rop'
 
 export module Descriptors {
 
@@ -33,7 +33,7 @@ export module Descriptors {
         const curriedIsWithinRange = 
             (subject2: string) => Validations.isCorrectLen(descriptor.minLen, descriptor.maxLen, subject2)
         const result =
-            startTrack(bindIf(descriptor.required, Validations.hasValue, subject ))
+            startTrack(runValidateIf(descriptor.required, Validations.hasValue, subject ))
             .then(curriedIsWithinRange)
             .getResult()
         return result
@@ -42,7 +42,7 @@ export module Descriptors {
         const curriedIsWithinRange = 
             (subject2: number) => Validations.isWithinRange(descriptor.minVal, descriptor.maxVal, subject2)
         const result =
-            startTrack(bindIf(descriptor.required, Validations.hasValue, subject ))
+            startTrack(runValidateIf(descriptor.required, Validations.hasValue, subject ))
             .then(Validations.tryNumber)
             .then(curriedIsWithinRange)
             .getResult()
@@ -50,9 +50,8 @@ export module Descriptors {
     }
     export function validateChoice(descriptor: Choice, subject: string | number) {
         const result =
-            startTrack(bindIf(descriptor.required, Validations.hasValue, subject ))
-            .then(Validations.)
-            .then(curriedIsWithinRange)
+            startTrack(runValidateIf(descriptor.required, Validations.hasValue, subject ))
+            .then((input) => Validations.isOneOf(descriptor.options, input.toString()))
             .getResult()
         return result
     }

@@ -16,7 +16,9 @@ export interface Bad<ErrType> {
 export interface PropertyError {
     errorDescription: string
 } 
-
+export function getErrorsAsString(errs: PropertyError[]) {
+    return errs.map((currVal) => currVal.errorDescription)
+}
 export type RopResult<T, ErrType>  =  Good<T> | Bad<ErrType>
 
 function pass<T>(payload: T): Good<T> {
@@ -42,27 +44,10 @@ export class RopBind<A, ErrType> {
         const nextResult = this.thenMap(nextFunc)
         return new RopBind(nextResult)
     }
-    pssIfTrue(nextFunc: (input: A) => boolean, errMsg: string) {
-        const nextResult = this.thenPassIfTrue(nextFunc, errMsg)
-        return new RopBind(nextResult)
-    }
     getResult() {
         return this.firstResult
     }
-    private thenPassIfTrue<T>(nextFunc: (input: A) => boolean, errMsg: string) {
-        const firstResult = this.firstResult
-        switch (firstResult.kind) {
-            case GOOD :
-                const evalRes = nextFunc(firstResult.payload)
-                const secondRes = evalRes ? pass(firstResult.payload) : fail({ errorDescription: errMsg})
-                return secondRes
-            case BAD :
-                return (firstResult)
-            default:
-                return (firstResult)
-
-        }
-    }
+    
     private thenMap<T>(nextFunc: (input: A) => T) {
         const firstResult = this.firstResult
         switch (firstResult.kind) {
@@ -108,7 +93,7 @@ export function startTrack<A, ErrType>(firstResult: RopResult<A, ErrType>) {
     //     }
     // };
 }
-export function bindIf<A, ErrType>(evaluate: boolean, evalFunc: (input: A) => RopResult<A, ErrType>, input: A) {
+export function runValidateIf<A, ErrType>(evaluate: boolean, evalFunc: (input: A) => RopResult<A, ErrType>, input: A) {
     if (evaluate) {
         return evalFunc(input)
     } else {
@@ -117,6 +102,12 @@ export function bindIf<A, ErrType>(evaluate: boolean, evalFunc: (input: A) => Ro
 }
 
 export module Validations {
+
+    export function passIfTrue< A>(nextFunc: (input: A) => boolean, errMsg: string, subject: A) {
+        const evalRes = nextFunc(subject)
+        const secondRes = evalRes ? pass(subject) : fail({ errorDescription: errMsg})
+        return secondRes
+    }
     export function isWithinRange(min: number, max: number, subject: number): 
         RopResult<number, PropertyError> {
         if (subject >= min && subject <= max) {
@@ -170,6 +161,15 @@ export module Validations {
             return pass(subject )
         } else {
             return fail( { errorDescription: `Length must be between ${min} and ${max}` }  )
+        }
+    }
+    export function isOneOf(choices: string[], subject: string): 
+        RopResult<string, PropertyError> {
+        if (choices.findIndex((currval) => currval === subject) >= 0) {
+            return pass(subject )
+        } else {
+            const choicesStr = choices.join(', ')
+            return fail( { errorDescription: `Must be one of the following: ${choicesStr}` }  )
         }
     }
     export function isNumberAndWithinRange(min: number, max: number, subject: string) {
