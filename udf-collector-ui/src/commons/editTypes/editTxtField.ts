@@ -15,7 +15,7 @@ export function emptyEditTextFieldCurrVal(label: string): EditTextFieldCurrVal {
     return {
     label,
     currTxtVal: '',
-    currErrors: ['']
+    currErrors: []
   }}
 export function applyTextValue<T>(descriptor: EditTextFieldDescriptor<T>, newVal: string) {
     const result = descriptor.fromRendition(newVal)

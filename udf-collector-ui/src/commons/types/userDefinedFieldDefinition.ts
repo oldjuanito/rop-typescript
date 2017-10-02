@@ -15,7 +15,8 @@ type PrimitiveIdentifier =
 
 export interface UserDefinedFieldDefinition {
     label: string ,
-    primitiveType:  PrimitiveIdentifier
+    primitiveType:  PrimitiveIdentifier,
+    options: string[]
 } 
 
 // const te : UserDefinedFieldDefinition = { label: 'aj', primitiveType : PrimitiveIdentifierConsts.MultiLineText  }

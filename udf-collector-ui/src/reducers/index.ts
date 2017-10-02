@@ -17,12 +17,15 @@ function enthusiasm(state: StoreState, action: udfAction): StoreState {
 }
 function fieldChg(state: StoreState, action: udfAction): StoreState {
     // const myMoney = RequiredPositiveMoney.tryCreate(56)
+
     switch (action.type) {
         case FIELD_VAL_CHG:
-            const newEditSession = state.udfDescriptor(action.payload)
-            const newUdfValues = state.udfValues.map((u) => u.label === action.fieldName ? newEditSession : u)
+            // TODO: ignore if curr value same as old?? Syncfusion drop downs not liking it, maybe create samrt wrapper for them per the docs with the refs
+            const newSession = state.udfDescriptor(action.payload)
+            // console.log(newSession)
+            const newUdfValues = state.udfValues.map((u) => u.label === newSession.label ? newSession : u)
            
-            console.log(state.udfValues)
+            console.log(newUdfValues)
             return { ...state, udfValues: newUdfValues }
         default:
             return state

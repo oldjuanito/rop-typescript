@@ -1,7 +1,9 @@
 import { EditTextFieldCurrVal } from '../commons/editTypes/editTxtField'
-import { UserDefinedFieldDefinition } from '../commons/types/userDefinedFieldDefinition'
-import * as React from 'react'
+import { PrimitiveIdentifierConsts, UserDefinedFieldDefinition } from '../commons/types/userDefinedFieldDefinition';
+import * as React from 'react';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons'
+import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns'
+import { ChangeEventArgs } from '@syncfusion/ej2-dropdowns';
 
 export interface Props {
     name: string
@@ -22,6 +24,36 @@ function errorList(errs: string[]) {
     </div>
   )
 }
+
+function onDropDownChg(onFieldValueChg: (label:  string, newVal:  string) => void, label:  string) {
+  return function (evt: ChangeEventArgs) {
+    if (evt !== undefined && evt.item != null) {
+      onFieldValueChg(label, evt.item.attributes.getNamedItem('data-value').value)
+    }
+  }
+}
+
+function createControlView(onFieldValueChg: (label:  string, newVal:  string) => void, udfDef: UserDefinedFieldDefinition , 
+                           udfCurrVal: EditTextFieldCurrVal | undefined) {
+  const key = udfDef.label + '_fld'
+  const currVal = udfCurrVal ? udfCurrVal.currTxtVal : ''
+  switch (udfDef.primitiveType) {
+    case PrimitiveIdentifierConsts.Choices:
+        return ( 
+          <DropDownListComponent 
+            id={key} 
+            popupHeight="250px" 
+            dataSource={udfDef.options} 
+            placeholder="" 
+            change={onDropDownChg(onFieldValueChg, udfDef.label)}
+            text={currVal}
+          />
+        )
+    default:
+        return <input onChange={(evt) => onFieldValueChg(udfDef.label, evt.target.value)} /> 
+}
+     
+}
 function udfFieldView(onFieldValueChg: (label:  string, newVal:  string) => void, udfDef: UserDefinedFieldDefinition , 
                       udfCurrVal: EditTextFieldCurrVal | undefined) {
   const hasErrs = udfCurrVal && udfCurrVal.currErrors.length > 0
@@ -29,7 +61,7 @@ function udfFieldView(onFieldValueChg: (label:  string, newVal:  string) => void
   return ( 
       <div key={udfDef.label}>
         <label>{udfDef.label}</label>
-        <input onChange={(evt) => onFieldValueChg(udfDef.label, evt.target.value)} /> 
+        {createControlView(onFieldValueChg, udfDef, udfCurrVal)}
         {(hasErrs) ? errorList(errs) : <span />} 
       </div>
   )
