@@ -48,4 +48,12 @@ export module Descriptors {
             .getResult()
         return result
     }
+    export function validateChoice(descriptor: Choice, subject: string | number) {
+        const result =
+            startTrack(bindIf(descriptor.required, Validations.hasValue, subject ))
+            .then(Validations.)
+            .then(curriedIsWithinRange)
+            .getResult()
+        return result
+    }
 }
