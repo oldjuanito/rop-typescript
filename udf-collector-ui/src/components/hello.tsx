@@ -1,7 +1,7 @@
-import DropDownSf from '../commons/components/dropDownSf'
+import { DropDownSf, SampleFilterDrop } from '../commons/components/dropDownSf'
 import { EditTextFieldCurrVal } from '../commons/editTypes/editTxtField'
 import { PrimitiveIdentifierConsts, UserDefinedFieldDefinition } from '../commons/types/userDefinedFieldDefinition';
-import * as React from 'react';
+import * as React from 'react'
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons'
 
 export interface Props {
@@ -28,7 +28,7 @@ function createControlView(onFieldValueChg: (label:  string, newVal:  string) =>
                            udfDef: UserDefinedFieldDefinition , 
                            udfCurrVal: EditTextFieldCurrVal | undefined) {
   const key = udfDef.label + '_fld'
-  // const currVal = udfCurrVal ? udfCurrVal.currTxtVal : ''
+  const currVal = udfCurrVal ? udfCurrVal.currTxtVal : ''
   const caller = (newVal:  string) => onFieldValueChg(udfDef.label, newVal)
   switch (udfDef.primitiveType) {
     case PrimitiveIdentifierConsts.Choices:
@@ -37,6 +37,7 @@ function createControlView(onFieldValueChg: (label:  string, newVal:  string) =>
             id={key}
             onSelectionChange={caller}
             choices={udfDef.options}
+            currVal={currVal}
           />
         )
     default:
@@ -75,6 +76,7 @@ function Hello({ name, enthusiasmLevel = 1, onIncrement, onDecrement, onFieldVal
           <button onClick={onDecrement}>-</button>
           <button onClick={onIncrement}>+</button>
         </div>
+        <SampleFilterDrop />
       </div>
     )
   }
