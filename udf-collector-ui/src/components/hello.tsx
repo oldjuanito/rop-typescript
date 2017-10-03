@@ -1,9 +1,8 @@
+import DropDownSf from '../commons/components/dropDownSf'
 import { EditTextFieldCurrVal } from '../commons/editTypes/editTxtField'
 import { PrimitiveIdentifierConsts, UserDefinedFieldDefinition } from '../commons/types/userDefinedFieldDefinition';
 import * as React from 'react';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons'
-import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns'
-import { ChangeEventArgs } from '@syncfusion/ej2-dropdowns';
 
 export interface Props {
     name: string
@@ -25,28 +24,19 @@ function errorList(errs: string[]) {
   )
 }
 
-function onDropDownChg(onFieldValueChg: (label:  string, newVal:  string) => void, label:  string) {
-  return function (evt: ChangeEventArgs) {
-    if (evt !== undefined && evt.item != null) {
-      onFieldValueChg(label, evt.item.attributes.getNamedItem('data-value').value)
-    }
-  }
-}
-
-function createControlView(onFieldValueChg: (label:  string, newVal:  string) => void, udfDef: UserDefinedFieldDefinition , 
+function createControlView(onFieldValueChg: (label:  string, newVal:  string) => void, 
+                           udfDef: UserDefinedFieldDefinition , 
                            udfCurrVal: EditTextFieldCurrVal | undefined) {
   const key = udfDef.label + '_fld'
-  const currVal = udfCurrVal ? udfCurrVal.currTxtVal : ''
+  // const currVal = udfCurrVal ? udfCurrVal.currTxtVal : ''
+  const caller = (newVal:  string) => onFieldValueChg(udfDef.label, newVal)
   switch (udfDef.primitiveType) {
     case PrimitiveIdentifierConsts.Choices:
         return ( 
-          <DropDownListComponent 
-            id={key} 
-            popupHeight="250px" 
-            dataSource={udfDef.options} 
-            placeholder="" 
-            change={onDropDownChg(onFieldValueChg, udfDef.label)}
-            text={currVal}
+          <DropDownSf 
+            id={key}
+            onSelectionChange={caller}
+            choices={udfDef.options}
           />
         )
     default:

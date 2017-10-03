@@ -20,7 +20,8 @@ function fieldChg(state: StoreState, action: udfAction): StoreState {
 
     switch (action.type) {
         case FIELD_VAL_CHG:
-            // TODO: ignore if curr value same as old?? Syncfusion drop downs not liking it, maybe create samrt wrapper for them per the docs with the refs
+            // TODO: ignore if curr value same as old?? Syncfusion drop downs not liking it, 
+            //   maybe create samrt wrapper for them per the docs with the refs
             const newSession = state.udfDescriptor(action.payload)
             // console.log(newSession)
             const newUdfValues = state.udfValues.map((u) => u.label === newSession.label ? newSession : u)
