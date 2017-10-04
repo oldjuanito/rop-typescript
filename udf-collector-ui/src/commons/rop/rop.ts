@@ -75,6 +75,46 @@ export class RopBind<A, ErrType> {
         }
     }
 }
+
+// function thenResult<T, A, ErrType>(nextFunc: (input: A) => RopResult<T, ErrType>, firstResult: RopResult<A, ErrType>) {
+//     switch (firstResult.kind) {
+//         case GOOD :
+//             const secondRes = nextFunc(firstResult.payload)
+//             return secondRes
+//         case BAD :
+//             return (firstResult)
+//         default:
+//             return (firstResult)
+
+//     }
+// }
+// export module Rop {
+//     export function createTrack<I1, I2,  FinalRes, ErrType>(
+//             func1: (input: I1) => RopResult<I2, ErrType>, 
+//             func2: (input: I2) => RopResult<FinalRes, ErrType>) {
+                
+//                 return function (startInput: I1) {
+//                     let r1 = func1(startInput)
+//                     let r2 = thenResult(func2, r1)
+//                     return r2
+//                 } 
+        
+//             }
+//     export function createTrack<I1, I2, I3, O3, ErrType>(
+//         func1: (input: I1) => RopResult<I2, ErrType>, 
+//         func2: (input: I2) => RopResult<I3, ErrType>, 
+//         func3: (input: I3) => RopResult<O3, ErrType>) {
+            
+//             return function (startInput: I1) {
+//                 let r1 = func1(startInput)
+//                 let r2 = thenResult(func2, r1)
+//                 let r3 = thenResult(func3, r2)
+//                 return r3
+//             } 
+
+//         }
+// }
+
 export function startTrack<A, ErrType>(firstResult: RopResult<A, ErrType>) {
     return new RopBind(firstResult)
     // return {

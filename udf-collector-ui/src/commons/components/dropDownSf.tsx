@@ -1,4 +1,5 @@
-import * as React from 'react'
+import { ComboBoxComponent } from '@syncfusion/ej2-react-dropdowns/combo-box';
+import * as React from 'react';
 import { DropDownListComponent, DropDownList } from '@syncfusion/ej2-react-dropdowns'
 import { FilteringEventArgs } from '@syncfusion/ej2-dropdowns'
 import { Query } from '@syncfusion/ej2-data'
@@ -6,30 +7,71 @@ import { Query } from '@syncfusion/ej2-data'
 export interface DropDownSfProps {
     onSelectionChange: (newVal: string) => void
     choices: string[]
-    id: string
+    // id: string
     currVal: string
   }
 
-export class DropDownSf extends React.Component<DropDownSfProps, {}> {
+export class ComboBoxSf extends React.Component<DropDownSfProps, {}> {
+    // define the array of data
+    private choicesData: string[] = []
     private myDropDown: DropDownList | null
-    private fields: object = { text: "index", value: "descr" };
-    // private choicesData: { [key: string]: Object; }[] = []
-
-    constructor() {
-        super()
+    constructor(props: DropDownSfProps) {
+        super(props)
         this.onSelectionChange = this.onSelectionChange.bind(this)
-        // this.choicesData = 
+        this.choicesData = props.choices
+        this.shouldComponentUpdate = this.shouldComponentUpdate.bind(this)
+            // props.choices.map((item) => { return { index: item, descr: item } } )
         // this.onFiltering = this.onFiltering.bind(this)
     }
+    shouldComponentUpdate() {
+        console.log( 'shouldComponentUpdate ComboBoxSf' )
+        return false
+    }
+    onSelectionChange() {
+        if (this.myDropDown != null) {
+            console.log( this.myDropDown.value.toString() )
+            this.props.onSelectionChange( this.myDropDown.value.toString() ) // Maybe [pronlematic??]
+        }
+    }
+    render() {
+        console.log( 'render ComboBoxSf' )
+        return (
+            // specifies the tag for render the ComboBox component
+            <ComboBoxComponent 
+                ref={(scope) => { this.myDropDown = scope }}
+                dataSource={this.choicesData} 
+                change={this.onSelectionChange} 
+                
+                placeholder='Select an Option' 
+            />
+        )
+    }
+  }
+export class DropDownSf extends React.Component<DropDownSfProps, {}> {
+    private myDropDown: DropDownList | null
+    private fields: object = { text: 'index', value: 'descr' }
+    private choicesData: { [key: string]: Object; }[] = []
+
+    constructor(props: DropDownSfProps) {
+        super(props)
+        this.onSelectionChange = this.onSelectionChange.bind(this)
+        this.choicesData = 
+            props.choices.map((item) => { return { index: item, descr: item } } )
+        this.onFiltering = this.onFiltering.bind(this)
+        this.shouldComponentUpdate = this.shouldComponentUpdate.bind(this)
+    }
     
-    // // filtering event handler to filter a country
-    // onFiltering(args: FilteringEventArgs) {
-    //     let query = new Query()
-    //     //frame the query based on search string with filter type.
-    //     query = (args.text != "") ? query.where("country", "startswith", args.text, true) : query
-    //     //pass the filter data source, filter query to updateData method.
-    //     args.updateData(this.searchData, query)
-    // }
+    shouldComponentUpdate() {
+        console.log( 'shouldComponentUpdate DropDownSf' )
+        return false
+    }
+    // filtering event handler to filter a country
+    onFiltering(args: FilteringEventArgs) {
+        const keyword = args.text
+        let query = new Query()
+        query = (keyword !== '') ? query.where('descr', 'contains', keyword, true) : query
+        args.updateData(this.choicesData, query)
+    }
 
     onSelectionChange() {
         if (this.myDropDown != null) {
@@ -37,18 +79,17 @@ export class DropDownSf extends React.Component<DropDownSfProps, {}> {
         }
     }
     render() {
-        const choicesData: { [key: string]: Object; }[] = 
-            this.props.choices.map((item) => { return { index: item, descr: item } } )
         return (
              // specifies the tag for render the DropDownList component
             <DropDownListComponent 
                 popupHeight="250px" 
-                id={this.props.id}
+                
                 ref={(scope) => { this.myDropDown = scope }}
                 allowFiltering={true}
+                filtering={this.onFiltering}
                 fields={this.fields}
                 value={this.props.currVal}
-                dataSource={choicesData} 
+                dataSource={this.choicesData} 
                 placeholder="Select an Option" 
                 change={this.onSelectionChange}
             />

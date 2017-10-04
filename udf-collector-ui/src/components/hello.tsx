@@ -1,6 +1,6 @@
-import { DropDownSf, SampleFilterDrop } from '../commons/components/dropDownSf'
+import { ComboBoxSf, DropDownSf, SampleFilterDrop } from '../commons/components/dropDownSf'
 import { EditTextFieldCurrVal } from '../commons/editTypes/editTxtField'
-import { PrimitiveIdentifierConsts, UserDefinedFieldDefinition } from '../commons/types/userDefinedFieldDefinition';
+import { PrimitiveIdentifierConsts, UserDefinedFieldDefinition } from '../commons/types/userDefinedFieldDefinition'
 import * as React from 'react'
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons'
 
@@ -27,14 +27,13 @@ function errorList(errs: string[]) {
 function createControlView(onFieldValueChg: (label:  string, newVal:  string) => void, 
                            udfDef: UserDefinedFieldDefinition , 
                            udfCurrVal: EditTextFieldCurrVal | undefined) {
-  const key = udfDef.label + '_fld'
+  // const key = udfDef.label + '_fld'
   const currVal = udfCurrVal ? udfCurrVal.currTxtVal : ''
   const caller = (newVal:  string) => onFieldValueChg(udfDef.label, newVal)
   switch (udfDef.primitiveType) {
     case PrimitiveIdentifierConsts.Choices:
         return ( 
           <DropDownSf 
-            id={key}
             onSelectionChange={caller}
             choices={udfDef.options}
             currVal={currVal}
@@ -63,6 +62,8 @@ function Hello({ name, enthusiasmLevel = 1, onIncrement, onDecrement, onFieldVal
       throw new Error('You could be a little more enthusiastic. :D')
     }
     
+    const sampleCaller = (newVal:  string) => console.log('hello ' + newVal) 
+    const sampleOpts = ['Badminton', 'Cricket', 'Football', 'Golf', 'Tennis']
     console.log('render')
     return (
       <div className="hello">
@@ -77,6 +78,11 @@ function Hello({ name, enthusiasmLevel = 1, onIncrement, onDecrement, onFieldVal
           <button onClick={onIncrement}>+</button>
         </div>
         <SampleFilterDrop />
+          <ComboBoxSf 
+            onSelectionChange={sampleCaller}
+            choices={sampleOpts}
+            currVal={'Football'}
+          />
       </div>
     )
   }
