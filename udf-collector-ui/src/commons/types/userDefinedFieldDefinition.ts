@@ -6,7 +6,7 @@ export const enum PrimitiveIdentifierConsts {
     Choices = 'Choices' 
 }
 
-type PrimitiveIdentifier = 
+export type PrimitiveIdentifier = 
     PrimitiveIdentifierConsts.Choices 
     | PrimitiveIdentifierConsts.FileInput 
     | PrimitiveIdentifierConsts.Money 

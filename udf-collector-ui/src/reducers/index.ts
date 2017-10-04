@@ -1,3 +1,4 @@
+import { UdfStore } from '../commons/editTypes/editTxtField';
 import { udfAction } from '../actions'
 import { StoreState } from '../types/storeType'
 import { INCREMENT_ENTHUSIASM, DECREMENT_ENTHUSIASM, FIELD_VAL_CHG } from '../constants/index'
@@ -20,14 +21,23 @@ function fieldChg(state: StoreState, action: udfAction): StoreState {
 
     switch (action.type) {
         case FIELD_VAL_CHG:
-            // TODO: ignore if curr value same as old?? Syncfusion drop downs not liking it, 
-            //   maybe create samrt wrapper for them per the docs with the refs
-            const newSession = state.udfDescriptor(action.payload)
-            // console.log(newSession)
-            const newUdfValues = state.udfValues.map((u) => u.label === newSession.label ? newSession : u)
-           
-            console.log(newUdfValues)
-            return { ...state, udfValues: newUdfValues }
+            const udfStore: UdfStore | undefined = state.udfStores.find((u) => u.udfField.label === action.fieldName)
+            if (udfStore ) {
+                const newSession = udfStore.udfDescriptor(action.payload)
+                // console.log(newSession)
+                const newUdfStores = state.udfStores.map(function (u: UdfStore) {
+                        if (u.udfField.label === newSession.label) {
+                            return { ...u, udfValue: newSession }
+                        } else {
+                            return u
+                        }
+                    }
+                )
+                console.log(newUdfStores)
+                return { ...state, udfStores: newUdfStores }
+            } else {
+                return state
+            }
         default:
             return state
     }

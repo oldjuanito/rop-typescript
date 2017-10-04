@@ -3,12 +3,11 @@ import * as actions from '../actions/'
 import { StoreState } from '../types/storeType'
 import { connect, Dispatch } from 'react-redux'
 
-export function mapStateToProps({ enthusiasmLevel, languageName, udfFields, udfValues }: StoreState) {
+export function mapStateToProps({ enthusiasmLevel, languageName, udfStores }: StoreState) {
     return {
       enthusiasmLevel,
       name: languageName,
-      udfFields,
-      udfValues
+      udfStores
     }
   }
 

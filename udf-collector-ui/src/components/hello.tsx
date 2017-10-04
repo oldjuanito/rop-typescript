@@ -1,8 +1,9 @@
 import { ComboBoxSf, DropDownSf, SampleFilterDrop } from '../commons/components/dropDownSf'
-import { EditTextFieldCurrVal } from '../commons/editTypes/editTxtField'
+import { EditTextFieldCurrVal, UdfStore } from '../commons/editTypes/editTxtField';
 import { PrimitiveIdentifierConsts, UserDefinedFieldDefinition } from '../commons/types/userDefinedFieldDefinition'
-import * as React from 'react'
+import * as React from 'react';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons'
+import { UploadBox } from '../commons/components/uploadBox';
 
 export interface Props {
     name: string
@@ -10,8 +11,9 @@ export interface Props {
     onIncrement?: () => void
     onDecrement?: () => void
     onFieldValueChg: (label:  string, newVal:  string) => void
-    udfValues: EditTextFieldCurrVal[]
-    udfFields: UserDefinedFieldDefinition[]
+    udfStores: UdfStore[]
+    // udfValues: EditTextFieldCurrVal[]
+    // udfFields: UserDefinedFieldDefinition[]
   }
 function errorItem(err: string) {
   return <li key={err} className="prop-error">{err}</li>
@@ -30,6 +32,7 @@ function createControlView(onFieldValueChg: (label:  string, newVal:  string) =>
   // const key = udfDef.label + '_fld'
   const currVal = udfCurrVal ? udfCurrVal.currTxtVal : ''
   const caller = (newVal:  string) => onFieldValueChg(udfDef.label, newVal)
+  const onFileRead = (fileName: string, binaryContents: string) => onFieldValueChg(udfDef.label, binaryContents)
   switch (udfDef.primitiveType) {
     case PrimitiveIdentifierConsts.Choices:
         return ( 
@@ -39,13 +42,19 @@ function createControlView(onFieldValueChg: (label:  string, newVal:  string) =>
             currVal={currVal}
           />
         )
+    case PrimitiveIdentifierConsts.FileInput:
+      return ( 
+        <UploadBox 
+          onFileRead={onFileRead}
+        />
+      )
     default:
         return <input onChange={(evt) => onFieldValueChg(udfDef.label, evt.target.value)} /> 
 }
      
 }
 function udfFieldView(onFieldValueChg: (label:  string, newVal:  string) => void, udfDef: UserDefinedFieldDefinition , 
-                      udfCurrVal: EditTextFieldCurrVal | undefined) {
+                      udfCurrVal: EditTextFieldCurrVal ) {
   const hasErrs = udfCurrVal && udfCurrVal.currErrors.length > 0
   const errs = (udfCurrVal as EditTextFieldCurrVal).currErrors
   return ( 
@@ -57,7 +66,7 @@ function udfFieldView(onFieldValueChg: (label:  string, newVal:  string) => void
   )
 
 }
-function Hello({ name, enthusiasmLevel = 1, onIncrement, onDecrement, onFieldValueChg, udfValues, udfFields }: Props) {
+function Hello({ name, enthusiasmLevel = 1, onIncrement, onDecrement, onFieldValueChg, udfStores }: Props) {
     if (enthusiasmLevel <= 0) {
       throw new Error('You could be a little more enthusiastic. :D')
     }
@@ -71,7 +80,7 @@ function Hello({ name, enthusiasmLevel = 1, onIncrement, onDecrement, onFieldVal
           Hello {name + getExclamationMarks(enthusiasmLevel)}
         </div>
         <ButtonComponent type="primary">Button</ButtonComponent>
-        {udfFields.map((def) => udfFieldView(onFieldValueChg, def, udfValues.find((u) => u.label === def.label) ) )}
+        {udfStores.map(({udfDescriptor, udfValue, udfField}) => udfFieldView(onFieldValueChg, udfField, udfValue) )}
         
         <div>
           <button onClick={onDecrement}>-</button>

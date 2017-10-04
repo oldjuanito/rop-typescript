@@ -1,5 +1,6 @@
 // import { Descriptors } from '../types/primitiveDescriptors'
 import { PropertyError,  RopResult, GOOD, BAD, getErrorsAsString } from '../rop/rop'
+import { UserDefinedFieldDefinition } from '../types/userDefinedFieldDefinition'
 
 export interface EditTextFieldDescriptor<T> {
     label: string
@@ -34,4 +35,10 @@ export function applyTextValue<T>(descriptor: EditTextFieldDescriptor<T>, newVal
 }
 export function createTxtValueApplier<T>(descriptor: EditTextFieldDescriptor<T>) {
     return (newVal: string) => applyTextValue<T>(descriptor, newVal)
+}
+
+export interface UdfStore {
+    udfDescriptor: (newVal: string) => EditTextFieldCurrVal
+    udfValue: EditTextFieldCurrVal
+    udfField: UserDefinedFieldDefinition
 }

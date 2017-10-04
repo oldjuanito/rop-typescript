@@ -1,5 +1,5 @@
 import { Descriptors } from './primitiveDescriptors'
-import { startTrack } from '../rop/rop'
+import { PropertyError, RopResult, startTrack } from '../rop/rop'
 
 export module RequiredChoice {
     export function choicesConstructor(choices: string[]) {
@@ -12,7 +12,7 @@ export module RequiredChoice {
             }
             getVal() { return this.value }
         } 
-        return function tryCreate(initialVal: string) {
+        return function tryCreate(initialVal: string): RopResult<T, PropertyError> {
             return startTrack(Descriptors.validateChoice(dataDescription, initialVal))
                 .map( (n) => new T(n))
                 .getResult()
