@@ -1,20 +1,15 @@
-import { Descriptors } from './primitiveDescriptors'
-import { startTrack } from '../rop/rop'
+import { startTrack, Validations } from '../rop/rop'
 
 export module RequiredAttachmentId {
-    const dataDescription: Descriptors.Numeric = { 
-        maxVal : Number.MAX_VALUE,
-        minVal: 1,
-        required: true
-    }
+    
     class T {
-        constructor(private value: number) {
+        constructor(private value: string) {
         }
         getVal() { return this.value }
     } 
-    export function tryCreate(initialVal: number | string) {
+    export function tryCreate(initialVal: string) {
         const result =
-            startTrack(Descriptors.validateNumber(dataDescription, initialVal))
+            startTrack(Validations.hasValue(initialVal))
             .map( (n) => new T(n))
             .getResult()
         return result

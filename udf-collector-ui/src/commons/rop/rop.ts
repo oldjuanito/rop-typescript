@@ -156,6 +156,26 @@ export module Validations {
             return fail( { errorDescription: `Must be between ${min} and ${max}` }  )
         }
     }
+    export function tryDate(subject: string): 
+        RopResult<Date, PropertyError> {
+        if (isNullOrEmpty(subject)) {
+            return pass( new Date() )
+        }
+        const parsedSubject = new Date(subject)
+        if (parsedSubject.toString() === 'Invalid Date') {
+            return fail( { errorDescription: 'Must be a valid date' }  )
+        } else {
+            return pass( parsedSubject )
+        }
+    }
+    export function isDateWithinRange(min: Date, max: Date, subject: Date): 
+        RopResult<Date, PropertyError> {
+        if (subject >= min && subject <= max) {
+            return pass(subject )
+        } else {
+            return fail( { errorDescription: `Must be between ${min.toDateString()} and ${max.toDateString()}` }  )
+        }
+    }
 
     // export curriedIsWithinRange
 

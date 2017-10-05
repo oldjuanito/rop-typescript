@@ -18,6 +18,8 @@
    ========================================================================== */
 @import url(../node_modules/@syncfusion/ej2-react-buttons/styles/material.css);
 @import url(../node_modules/@syncfusion/ej2-react-dropdowns/styles/material.css);
+@import url(../node_modules/@syncfusion/ej2-react-inputs/styles/material.css);
+@import url(../node_modules/@syncfusion/ej2-react-calendars/styles/material.css);
 html {
   font-family: sans-serif;
   /* 1 */

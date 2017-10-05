@@ -24,7 +24,6 @@ function fieldChg(state: StoreState, action: udfAction): StoreState {
             const udfStore: UdfStore | undefined = state.udfStores.find((u) => u.udfField.label === action.fieldName)
             if (udfStore ) {
                 const newSession = udfStore.udfDescriptor(action.payload)
-                // console.log(newSession)
                 const newUdfStores = state.udfStores.map(function (u: UdfStore) {
                         if (u.udfField.label === newSession.label) {
                             return { ...u, udfValue: newSession }
@@ -33,7 +32,6 @@ function fieldChg(state: StoreState, action: udfAction): StoreState {
                         }
                     }
                 )
-                console.log(newUdfStores)
                 return { ...state, udfStores: newUdfStores }
             } else {
                 return state

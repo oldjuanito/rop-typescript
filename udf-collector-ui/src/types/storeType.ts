@@ -4,10 +4,14 @@ import {
     PrimitiveIdentifierConsts
 } from '../commons/types/userDefinedFieldDefinition'
 import { emptyEditTextFieldCurrVal, createTxtValueApplier, 
-    UdfStore} from '../commons/editTypes/editTxtField'
+    UdfStore } from '../commons/editTypes/editTxtField'
 import { RequiredChoice } from '../commons/types/requiredChoice'
-import { RequiredShortAnswer } from '../commons/types/requiredShortAnswer';
-import { RequiredAttachmentId } from '../commons/types/requiredAttachmentId';
+import { RequiredShortAnswer } from '../commons/types/requiredShortAnswer'
+import { RequiredAttachmentId } from '../commons/types/requiredAttachmentId'
+import { RequiredPositiveMoney } from '../commons/types/requiredPositiveMoney'
+import { RequiredFutureDate } from '../commons/types/requiredFutureDate'
+import { RequiredLongAnswer } from '../commons/types/requiredLongAnswer'
+import { RequiredPastDate } from '../commons/types/requiredPastDate'
 
 export interface StoreState {
     languageName: string
@@ -31,6 +35,26 @@ function createFactory(primitiveType: PrimitiveIdentifier, choices: string[], pr
                 label: propName,
                 fromRendition: RequiredAttachmentId.tryCreate
             })
+        case PrimitiveIdentifierConsts.Money:
+            return createTxtValueApplier({
+                label: propName,
+                fromRendition: RequiredPositiveMoney.tryCreate
+            })
+        case PrimitiveIdentifierConsts.FutureDate:
+            return createTxtValueApplier({
+                label: propName,
+                fromRendition: RequiredFutureDate.tryCreate
+            })
+        case PrimitiveIdentifierConsts.PastDate:
+            return createTxtValueApplier({
+                label: propName,
+                fromRendition: RequiredPastDate.tryCreate
+            })
+        case PrimitiveIdentifierConsts.MultiLineText:
+            return createTxtValueApplier({
+                label: propName,
+                fromRendition: RequiredLongAnswer.tryCreate
+            })
         default:
             return createTxtValueApplier({
                 label: propName,
@@ -52,6 +76,10 @@ function createSample(propName: string, primitiveType: PrimitiveIdentifier) {
 
 export function createSampleUdfStores() {
     return [
+        createSample('Explain product', PrimitiveIdentifierConsts.MultiLineText),
+        createSample('Date of Produced', PrimitiveIdentifierConsts.PastDate),
+        createSample('Date of Purchase', PrimitiveIdentifierConsts.FutureDate),
+        createSample('Amount of Purchase', PrimitiveIdentifierConsts.Money),
         createSample('lol', PrimitiveIdentifierConsts.Choices),
         createSample('peter', PrimitiveIdentifierConsts.FileInput),
         createSample('name', PrimitiveIdentifierConsts.SingleLineText)

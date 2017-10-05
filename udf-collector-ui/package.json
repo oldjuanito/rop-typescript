@@ -24,6 +24,8 @@
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
+    "@syncfusion/ej2-react-calendars": "^1.0.19",
+    "@syncfusion/ej2-react-inputs": "^1.0.19",
     "@types/jest": "^21.1.0",
     "@types/node": "^8.0.30",
     "@types/react": "^16.0.5",

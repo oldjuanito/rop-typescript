@@ -19,7 +19,7 @@ export module Descriptors {
         minVal: number
         maxVal: number
     } 
-    export interface Date {
+    export interface DateDesc {
         required: boolean
         minVal: Date
         maxVal: Date
@@ -34,6 +34,16 @@ export module Descriptors {
             (subject2: string) => Validations.isCorrectLen(descriptor.minLen, descriptor.maxLen, subject2)
         const result =
             startTrack(runValidateIf(descriptor.required, Validations.hasValue, subject ))
+            .then(curriedIsWithinRange)
+            .getResult()
+        return result
+    }
+    export function validateDate(descriptor: DateDesc, subject: string ) {
+        const curriedIsWithinRange = 
+            (subject2: Date) => Validations.isDateWithinRange(descriptor.minVal, descriptor.maxVal, subject2)
+        const result =
+            startTrack(runValidateIf(descriptor.required, Validations.hasValue, subject ))
+            .then(Validations.tryDate)
             .then(curriedIsWithinRange)
             .getResult()
         return result

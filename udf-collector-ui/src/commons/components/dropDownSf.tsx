@@ -24,17 +24,17 @@ export class ComboBoxSf extends React.Component<DropDownSfProps, {}> {
         // this.onFiltering = this.onFiltering.bind(this)
     }
     shouldComponentUpdate() {
-        console.log( 'shouldComponentUpdate ComboBoxSf' )
+        // console.log( 'shouldComponentUpdate ComboBoxSf' )
         return false
     }
     onSelectionChange() {
         if (this.myDropDown != null) {
-            console.log( this.myDropDown.value.toString() )
+            // console.log( this.myDropDown.value.toString() )
             this.props.onSelectionChange( this.myDropDown.value.toString() ) // Maybe [pronlematic??]
         }
     }
     render() {
-        console.log( 'render ComboBoxSf' )
+        // console.log( 'render ComboBoxSf' )
         return (
             // specifies the tag for render the ComboBox component
             <ComboBoxComponent 

@@ -6,16 +6,16 @@ export interface UploadBoxProps {
   onFileRead: (fileName: string, binaryContents: string) => void
 }
 export interface UploadBoxState {
-  accepted: File[]
-  rejected: File[]
+  accepted: File | null
+  rejected: File | null
 }
-function conditionalFilesView(label: string, files: File[]) {
-  if (files.length > 0) {
+function conditionalFilesView(label: string, f: File | null) {
+  if (f) {
     return (
       <div>
         <p><strong>{label}</strong></p>
         <ul>
-          {files.map((f: File) => <li key={f.name}>{f.name} - {f.size} bytes</li>)}
+          <li key={f.name}>{f.name} - {f.size} bytes</li>
         </ul>
       </div>
     )
@@ -31,11 +31,20 @@ export class UploadBox extends React.Component<UploadBoxProps, UploadBoxState> {
     constructor(props: UploadBoxProps) {
       super(props)
       this.state = {
-        accepted: [],
-        rejected: []
+        accepted: null,
+        rejected: null
       }
       this.onDrop = this.onDrop.bind(this)
+      this.shouldComponentUpdate = this.shouldComponentUpdate.bind(this)
       console.log( 'constructor UploadBox '  )
+    }
+    shouldComponentUpdate(nextProps: UploadBoxProps, nextState: UploadBoxState) {
+        console.log( 'shouldComponentUpdate UploadBox' )
+        if ((nextState.accepted !== this.state.accepted)
+        || (nextState.accepted !== this.state.accepted)) {
+          return true
+        }
+        return false
     }
     onDrop(accepted: File[], rejected: File[]) {
       accepted.forEach(file => {
@@ -49,12 +58,11 @@ export class UploadBox extends React.Component<UploadBoxProps, UploadBoxState> {
           reader.onerror = () => console.log('file reading has failed')
   
           reader.readAsBinaryString(file)
-          this.setState( {accepted, rejected} )
       })
+      this.setState( { accepted: accepted[0], rejected: rejected[0] } )
     }
     render() {
-      console.log( 'render UploadBox '  )
-      console.log(this.state)
+      // console.log( 'render UploadBox '  )
       //const styleProp: CSSProperties = { width : '80%', height: '1.4em'}
       return (
         <section>
