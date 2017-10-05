@@ -99,7 +99,6 @@ function udfFieldView(onFieldValueChg: (label:  string, newVal:  string) => void
 }
 function UdfFormView({ name, enthusiasmLevel = 1, onIncrement, onDecrement, onFieldValueChg, udfStores }: Props) {
         
-    console.log('render UdfFormView')
     return (
       <div className="udfFormView">
         {udfStores.map(({udfDescriptor, udfValue, udfField}) => udfFieldView(onFieldValueChg, udfField, udfValue) )}

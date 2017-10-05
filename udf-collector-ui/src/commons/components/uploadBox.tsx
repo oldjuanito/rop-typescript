@@ -36,10 +36,8 @@ export class UploadBox extends React.Component<UploadBoxProps, UploadBoxState> {
       }
       this.onDrop = this.onDrop.bind(this)
       this.shouldComponentUpdate = this.shouldComponentUpdate.bind(this)
-      console.log( 'constructor UploadBox '  )
     }
     shouldComponentUpdate(nextProps: UploadBoxProps, nextState: UploadBoxState) {
-        console.log( 'shouldComponentUpdate UploadBox' )
         if ((nextState.accepted !== this.state.accepted)
         || (nextState.accepted !== this.state.accepted)) {
           return true
