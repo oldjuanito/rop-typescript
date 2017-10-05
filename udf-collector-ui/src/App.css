@@ -2064,3 +2064,16 @@ li.e-error {
   align-items: center;
   justify-content: center;
   vertical-align: middle; }
+
+.fileUploadBox {
+  width: 80%;
+  height: 1.8em;
+  border-color: black;
+  border-width: 2px;
+  border-style: dashed; }
+
+.fileUploadBox-active {
+  border-color: green; }
+
+.fileUploadBox-reject {
+  border-color: red; }

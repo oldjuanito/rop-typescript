@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as Dropzone from 'react-dropzone'
+// import { CSSProperties } from 'react';
 
 export interface UploadBoxProps {
   onFileRead: (fileName: string, binaryContents: string) => void
@@ -8,13 +9,13 @@ export interface UploadBoxState {
   accepted: File[]
   rejected: File[]
 }
-function ErrorFilesView(rejected: File[]) {
-  if (rejected.length > 0) {
+function conditionalFilesView(label: string, files: File[]) {
+  if (files.length > 0) {
     return (
       <div>
-        <h2>Rejected files</h2>
+        <p><strong>{label}</strong></p>
         <ul>
-          {rejected.map((f: File) => <li key={f.name}>{f.name} - {f.size} bytes</li>)}
+          {files.map((f: File) => <li key={f.name}>{f.name} - {f.size} bytes</li>)}
         </ul>
       </div>
     )
@@ -24,6 +25,7 @@ function ErrorFilesView(rejected: File[]) {
     )
   }
 }
+
 export class UploadBox extends React.Component<UploadBoxProps, UploadBoxState> {
 
     constructor(props: UploadBoxProps) {
@@ -53,22 +55,24 @@ export class UploadBox extends React.Component<UploadBoxProps, UploadBoxState> {
     render() {
       console.log( 'render UploadBox '  )
       console.log(this.state)
+      //const styleProp: CSSProperties = { width : '80%', height: '1.4em'}
       return (
         <section>
           <div className="dropzone">
             <Dropzone
               accept="application/pdf, image/png"
               onDrop={this.onDrop}
+              className="fileUploadBox"
+              activeClassName="fileUploadBox-active"
+              rejectClassName="fileUploadBox-reject"
+              multiple={false}
             >
-              <p>Drop files here, or click to select files to upload. Only *.pdf will be accepted</p>
+              <p>Drop file here, or click to select file to upload. Only *.pdf will be accepted</p>
             </Dropzone>
           </div>
           <aside>
-            <h4>Accepted files</h4>
-            <ul>
-              {this.state.accepted.map((f: File) => <li key={f.name}>{f.name} - {f.size} bytes</li>)}
-            </ul>
-            {ErrorFilesView(this.state.rejected)}
+            {conditionalFilesView('Accepted file:', this.state.accepted)}
+            {conditionalFilesView('Rejected file:', this.state.rejected)}
           </aside>
         </section>
       )
