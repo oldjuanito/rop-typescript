@@ -47,6 +47,7 @@ export class UploadBox extends React.Component<UploadBoxProps, UploadBoxState> {
           reader.onerror = () => console.log('file reading has failed')
   
           reader.readAsBinaryString(file)
+          this.setState( {accepted, rejected} )
       })
     }
     render() {

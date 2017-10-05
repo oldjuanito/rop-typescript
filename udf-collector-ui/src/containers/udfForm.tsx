@@ -1,5 +1,5 @@
-import Hello from '../components/hello'
-import * as actions from '../actions/'
+import UdfFormView from '../components/udfFormView'
+import * as actions from '../actions'
 import { StoreState } from '../types/storeType'
 import { connect, Dispatch } from 'react-redux'
 
@@ -19,4 +19,4 @@ export function mapDispatchToProps(dispatch: Dispatch<actions.udfAction>) {
     }
   }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Hello)
+export default connect(mapStateToProps, mapDispatchToProps)(UdfFormView)

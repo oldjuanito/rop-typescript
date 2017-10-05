@@ -1,9 +1,8 @@
-import { ComboBoxSf, DropDownSf, SampleFilterDrop } from '../commons/components/dropDownSf'
-import { EditTextFieldCurrVal, UdfStore } from '../commons/editTypes/editTxtField';
+import { DropDownSf } from '../commons/components/dropDownSf'
+import { EditTextFieldCurrVal, UdfStore } from '../commons/editTypes/editTxtField'
 import { PrimitiveIdentifierConsts, UserDefinedFieldDefinition } from '../commons/types/userDefinedFieldDefinition'
 import * as React from 'react';
-import { ButtonComponent } from '@syncfusion/ej2-react-buttons'
-import { UploadBox } from '../commons/components/uploadBox';
+import { UploadBox } from '../commons/components/uploadBox'
 
 export interface Props {
     name: string
@@ -16,13 +15,13 @@ export interface Props {
     // udfFields: UserDefinedFieldDefinition[]
   }
 function errorItem(err: string) {
-  return <li key={err} className="prop-error">{err}</li>
+  return <li key={err} className="e-error"><i className="material-icons">&#xE000;</i> {err}</li>
 }
 function errorList(errs: string[]) {
   return (
-    <div className="prop-errors">
+    <ul className="prop-errors">
       {errs.map(errorItem)}
-    </div>
+    </ul>
   )
 }
 
@@ -58,48 +57,23 @@ function udfFieldView(onFieldValueChg: (label:  string, newVal:  string) => void
   const hasErrs = udfCurrVal && udfCurrVal.currErrors.length > 0
   const errs = (udfCurrVal as EditTextFieldCurrVal).currErrors
   return ( 
-      <div key={udfDef.label}>
-        <label>{udfDef.label}</label>
+      <div key={udfDef.label} className="mui-textfield">
         {createControlView(onFieldValueChg, udfDef, udfCurrVal)}
+        <label>{udfDef.label}</label>
         {(hasErrs) ? errorList(errs) : <span />} 
       </div>
   )
 
 }
-function Hello({ name, enthusiasmLevel = 1, onIncrement, onDecrement, onFieldValueChg, udfStores }: Props) {
-    if (enthusiasmLevel <= 0) {
-      throw new Error('You could be a little more enthusiastic. :D')
-    }
-    
-    const sampleCaller = (newVal:  string) => console.log('hello ' + newVal) 
-    const sampleOpts = ['Badminton', 'Cricket', 'Football', 'Golf', 'Tennis']
-    console.log('render')
+function UdfFormView({ name, enthusiasmLevel = 1, onIncrement, onDecrement, onFieldValueChg, udfStores }: Props) {
+        
+    console.log('render UdfFormView')
     return (
-      <div className="hello">
-        <div className="greeting">
-          Hello {name + getExclamationMarks(enthusiasmLevel)}
-        </div>
-        <ButtonComponent type="primary">Button</ButtonComponent>
+      <div className="udfFormView">
         {udfStores.map(({udfDescriptor, udfValue, udfField}) => udfFieldView(onFieldValueChg, udfField, udfValue) )}
         
-        <div>
-          <button onClick={onDecrement}>-</button>
-          <button onClick={onIncrement}>+</button>
-        </div>
-        <SampleFilterDrop />
-          <ComboBoxSf 
-            onSelectionChange={sampleCaller}
-            choices={sampleOpts}
-            currVal={'Football'}
-          />
       </div>
     )
   }
   
-export default Hello
-
-// helpers
-
-function getExclamationMarks(numChars: number) {
-  return Array(numChars + 1).join('!')
-}
+export default UdfFormView
