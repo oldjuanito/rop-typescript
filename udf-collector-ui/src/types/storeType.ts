@@ -12,11 +12,12 @@ import { RequiredPositiveMoney } from '../commons/types/requiredPositiveMoney'
 import { RequiredFutureDate } from '../commons/types/requiredFutureDate'
 import { RequiredLongAnswer } from '../commons/types/requiredLongAnswer'
 import { RequiredPastDate } from '../commons/types/requiredPastDate'
+import {List} from "immutable"
 
 export interface StoreState {
     languageName: string
     enthusiasmLevel: number
-    udfStores: UdfStore[]
+    udfStores: List<UdfStore>
     // udfDescriptor: (bewVal: string) => EditTextFieldCurrVal
     // udfValues: EditTextFieldCurrVal[]
     // udfFields: UserDefinedFieldDefinition[]
@@ -75,7 +76,7 @@ function createSample(propName: string, primitiveType: PrimitiveIdentifier) {
 }
 
 export function createSampleUdfStores() {
-    return [
+    return List([
         createSample('Explain product', PrimitiveIdentifierConsts.MultiLineText),
         createSample('Date of Produced', PrimitiveIdentifierConsts.PastDate),
         createSample('Date of Purchase', PrimitiveIdentifierConsts.FutureDate),
@@ -83,5 +84,5 @@ export function createSampleUdfStores() {
         createSample('lol', PrimitiveIdentifierConsts.Choices),
         createSample('peter', PrimitiveIdentifierConsts.FileInput),
         createSample('name', PrimitiveIdentifierConsts.SingleLineText)
-    ]
+    ])
 }

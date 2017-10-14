@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "immutable": "^3.8.2",
     "muicss": "^0.9.27",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",

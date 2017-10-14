@@ -5,6 +5,7 @@ import * as React from 'react'
 import { UploadBox } from '../commons/components/uploadBox'
 import { NumericTextBoxComponent, ChangeEventArgs as NumericChangeEventArgs } from '@syncfusion/ej2-react-inputs'
 import { DatePickerComponent, ChangeEventArgs as DateChangeEventArgs } from '@syncfusion/ej2-react-calendars'
+import {List} from "immutable"
 
 export interface Props {
     name: string
@@ -12,7 +13,7 @@ export interface Props {
     onIncrement?: () => void
     onDecrement?: () => void
     onFieldValueChg: (label:  string, newVal:  string) => void
-    udfStores: UdfStore[]
+    udfStores: List<UdfStore>
     // udfValues: EditTextFieldCurrVal[]
     // udfFields: UserDefinedFieldDefinition[]
   }

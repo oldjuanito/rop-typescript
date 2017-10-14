@@ -1,5 +1,5 @@
 import { UdfStore } from '../commons/editTypes/editTxtField';
-import { udfAction } from '../actions'
+import {FieldValueChg, udfAction} from '../actions'
 import { StoreState } from '../types/storeType'
 import { INCREMENT_ENTHUSIASM, DECREMENT_ENTHUSIASM, FIELD_VAL_CHG } from '../constants/index'
 
@@ -16,22 +16,23 @@ function enthusiasm(state: StoreState, action: udfAction): StoreState {
             return state
     }
 }
+
+function updateStateFromUdfVal(udfStoreIdx: number, action: FieldValueChg, state: StoreState) {
+    const newUdfStores = state.udfStores.update(udfStoreIdx, function (u: UdfStore) {
+                return {...u, udfValue: u.udfDescriptor(action.payload)}
+        }
+    )
+    return newUdfStores;
+}
+
 function fieldChg(state: StoreState, action: udfAction): StoreState {
     // const myMoney = RequiredPositiveMoney.tryCreate(56)
 
     switch (action.type) {
         case FIELD_VAL_CHG:
-            const udfStore: UdfStore | undefined = state.udfStores.find((u) => u.udfField.label === action.fieldName)
-            if (udfStore ) {
-                const newSession = udfStore.udfDescriptor(action.payload)
-                const newUdfStores = state.udfStores.map(function (u: UdfStore) {
-                        if (u.udfField.label === newSession.label) {
-                            return { ...u, udfValue: newSession }
-                        } else {
-                            return u
-                        }
-                    }
-                )
+            const udfStoreIdx = state.udfStores.findIndex((u) => u ? u.udfField.label === action.fieldName : false )
+            if (udfStoreIdx >= 0) {
+                const newUdfStores = updateStateFromUdfVal(udfStoreIdx, action, state);
                 return { ...state, udfStores: newUdfStores }
             } else {
                 return state
