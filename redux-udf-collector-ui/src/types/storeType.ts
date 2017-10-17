@@ -1,4 +1,3 @@
-import {FieldValueChg} from '../actions/index'
 // src/types/index.tsx
 import {
     PrimitiveIdentifier,
@@ -13,16 +12,16 @@ import { RequiredPositiveMoney } from '../commons/types/requiredPositiveMoney'
 import { RequiredFutureDate } from '../commons/types/requiredFutureDate'
 import { RequiredLongAnswer } from '../commons/types/requiredLongAnswer'
 import { RequiredPastDate } from '../commons/types/requiredPastDate'
-import { List } from 'immutable'
+import {List} from "immutable"
 
 export interface StoreState {
     languageName: string
     enthusiasmLevel: number
     udfStores: List<UdfStore>
+    // udfDescriptor: (bewVal: string) => EditTextFieldCurrVal
+    // udfValues: EditTextFieldCurrVal[]
+    // udfFields: UserDefinedFieldDefinition[]
 }
-
-export type Msg = FieldValueChg
-
 function createFactory(primitiveType: PrimitiveIdentifier, choices: string[], propName: string) {
 
     switch (primitiveType) {
@@ -79,20 +78,11 @@ function createSample(propName: string, primitiveType: PrimitiveIdentifier) {
 export function createSampleUdfStores() {
     return List([
         createSample('Explain product', PrimitiveIdentifierConsts.MultiLineText),
-        // createSample('Date of Produced', PrimitiveIdentifierConsts.PastDate), // suspected culprit of slow dowsn (maybe date regex)
-        // createSample('Date of Purchase', PrimitiveIdentifierConsts.FutureDate),
-        createSample('Amount of Purchase7', PrimitiveIdentifierConsts.Money),
-        createSample('Amount of Purchase6', PrimitiveIdentifierConsts.Money),
+        createSample('Date of Produced', PrimitiveIdentifierConsts.PastDate),
+        createSample('Date of Purchase', PrimitiveIdentifierConsts.FutureDate),
+        createSample('Amount of Purchase', PrimitiveIdentifierConsts.Money),
         createSample('lol', PrimitiveIdentifierConsts.Choices),
         createSample('peter', PrimitiveIdentifierConsts.FileInput),
-        createSample('name', PrimitiveIdentifierConsts.SingleLineText),
-        createSample('name1', PrimitiveIdentifierConsts.SingleLineText),
-        createSample('name2', PrimitiveIdentifierConsts.SingleLineText),
-        createSample('name3', PrimitiveIdentifierConsts.SingleLineText),
-        createSample('name4', PrimitiveIdentifierConsts.SingleLineText),
-        createSample('Amount of Purchase 2', PrimitiveIdentifierConsts.Money),
-        createSample('Amount of Purchase3', PrimitiveIdentifierConsts.Money),
-        createSample('Amount of Purchase4', PrimitiveIdentifierConsts.Money),
-        createSample('Amount of Purchase5', PrimitiveIdentifierConsts.Money),
+        createSample('name', PrimitiveIdentifierConsts.SingleLineText)
     ])
 }
