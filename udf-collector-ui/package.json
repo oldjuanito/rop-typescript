@@ -29,6 +29,7 @@
     "@types/react": "15.6.4",
     "@types/react-dom": "^15.5.4",
     "@types/react-dropzone": "^4.1.0",
-    "@types/react-redux": "^5.0.9"
+    "@types/react-redux": "^5.0.9",
+    "typescript": "^2.5.3"
   }
 }

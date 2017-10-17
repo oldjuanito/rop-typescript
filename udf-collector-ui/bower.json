@@ -1,0 +1,20 @@
+{
+  "name": "udf-collector-ui",
+  "description": "",
+  "main": "",
+  "authors": [
+    "jptarqu <jptarqu@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/jptarqu/rop-typescript",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "mui": "^0.9.27"
+  }
+}

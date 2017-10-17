@@ -62,7 +62,6 @@ export class DropDownSf extends React.Component<DropDownSfProps, {}> {
     }
     
     shouldComponentUpdate() {
-        console.log( 'shouldComponentUpdate DropDownSf' )
         return false
     }
     // filtering event handler to filter a country
