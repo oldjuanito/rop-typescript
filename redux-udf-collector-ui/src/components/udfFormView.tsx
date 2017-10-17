@@ -1,14 +1,11 @@
-import { DispatcherFunc } from '../commons/elmish/elmishApp';
-import { Msg, StoreState } from '../types/storeType';
 import { DropDownSf } from '../commons/components/dropDownSf'
 import { EditTextFieldCurrVal, UdfStore } from '../commons/editTypes/editTxtField'
 import { PrimitiveIdentifierConsts, UserDefinedFieldDefinition } from '../commons/types/userDefinedFieldDefinition'
-import * as React from 'react';
+import * as React from 'react'
 import { UploadBox } from '../commons/components/uploadBox'
 import { NumericTextBoxComponent, ChangeEventArgs as NumericChangeEventArgs } from '@syncfusion/ej2-react-inputs'
 import { DatePickerComponent, ChangeEventArgs as DateChangeEventArgs } from '@syncfusion/ej2-react-calendars'
 import {List} from "immutable"
-import { fieldValueChg } from '../actions/index';
 
 export interface Props {
     name: string
@@ -111,18 +108,4 @@ function UdfFormView({ name, enthusiasmLevel = 1, onIncrement, onDecrement, onFi
     )
   }
   
-export function UdfFormViewBasic(store: StoreState, dispatcher: DispatcherFunc<Msg>) {
-  const udfStores = store.udfStores
-  const onFieldValueChg = 
-    (label:  string, newVal:  string) => {
-      const newMsg: Msg = fieldValueChg(label, newVal)
-      dispatcher(newMsg)
-    }
-  return (
-  <div className="udfFormView">
-    {udfStores.map(({udfDescriptor, udfValue, udfField}) => udfFieldView(onFieldValueChg, udfField, udfValue) )}
-    
-  </div>
-  )
-}
 export default UdfFormView

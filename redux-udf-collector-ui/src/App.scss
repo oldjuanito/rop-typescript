@@ -1,0 +1,102 @@
+@import "../bower_components/mui/src/sass/mui/colors";
+
+// customize MUI variables
+$mui-primary-color:       mui-color('purple', '500');
+$mui-primary-color-dark:  mui-color('purple', '700');
+$mui-primary-color-light: mui-color('purple', '100');
+
+$mui-accent-color:        mui-color('green', 'A200');
+$mui-accent-color-dark:   mui-color('green', 'A100');
+$mui-accent-color-light:  mui-color('green', 'A400');
+
+// import MUI SASS
+@import "../bower_components/mui/src/sass/mui";
+
+@import "../node_modules/@syncfusion/ej2-react-buttons/styles/material.css";
+@import "../node_modules/@syncfusion/ej2-react-dropdowns/styles/material.css";
+@import "../node_modules/@syncfusion/ej2-react-inputs/styles/material.css";
+@import "../node_modules/@syncfusion/ej2-react-calendars/styles/material.css";
+
+body {
+  background-color: rgb(238, 238, 238)
+  
+}
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.mui-panel {
+  margin-top: 0.8em
+}
+
+.mui-appbar {
+  box-shadow: 0 2px 5px rgba(0,0,0,.26);
+}
+
+ul.prop-errors {
+  list-style: none;
+  padding: 0;
+}
+li.e-error {
+  padding-left: 0.2em;
+}
+// @font-face {
+//   font-family: 'Material Icons';
+//   font-style: normal;
+//   font-weight: 400;
+//   src: url(https://fonts.gstatic.com/s/materialicons/v29/2fcrYFNaTjcS6g4U3t-Y5ZjZjT5FdEJ140U2DJYC3mY.woff2) format('woff2');
+// }
+
+// li.e-error:before {
+//   content: '\fxE000'; /* FontAwesome Unicode */
+//   font-family: 'Material Icons';
+//   font-style: normal;
+//   font-weight: 400;
+//   display: inline-block;
+//   //margin-left: -1.3em; /* same as padding-left set on li */
+//   //width: 1.3em; /* same as padding-left set on li */
+// }
+.material-icons {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.fileUploadBox {
+  width: 80%;
+  height: 1.8em;
+  border-color: black;
+  border-width: 2px;
+  border-style: dashed;
+
+}
+.fileUploadBox-active {
+  border-color: green 
+  
+}
+.fileUploadBox-reject {
+  border-color: red 
+  
+}
