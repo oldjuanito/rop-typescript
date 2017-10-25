@@ -82,7 +82,15 @@ function createControlView(onFieldValueChg: (label:  string, newVal:  string) =>
           />
         )
     case PrimitiveIdentifierConsts.MultiLineText:
-        return <textarea onChange={(evt) => onFieldValueChg(udfDef.label, evt.target.value)} /> 
+        return <textarea onChange={(evt) => onFieldValueChg(udfDef.label, evt.target.value)} />
+    case PrimitiveIdentifierConsts.PositiveInteger:
+        return (
+          <NumericTextBoxComponent  
+                  format="0" 
+                  change={(evt: NumericChangeEventArgs) => 
+                    onFieldValueChg(udfDef.label, ((evt.value) ? evt.value : '').toString() )}
+          />
+          )
     default:
         return <input onChange={(evt) => onFieldValueChg(udfDef.label, evt.target.value)} /> 
 }

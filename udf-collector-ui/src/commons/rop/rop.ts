@@ -115,6 +115,28 @@ export class RopBind<A, ErrType> {
 //         }
 // }
 
+// export function createTrack<I1, I2, I3, O3, ErrType>(
+//     startInput: I1, 
+//     func1: (input: I1) => RopResult<I2, ErrType>, 
+//     func2?: (input: I2) => RopResult<I3, ErrType>, 
+//     func3?: (input: I3) => RopResult<O3, ErrType>) {
+        
+//         const funcs: (input: any) => RopResult<I2, ErrType> = []
+//         if (func2) {
+//             funcs
+//         }
+        
+
+//     }
+// export function createTrackArra<I1, I2, I3, I4, ErrType>(
+//     startInput: I1, 
+//     funcs: (((input: I1) => RopResult<I2, ErrType> )
+//             | ((input: I2) => RopResult<I3, ErrType>)
+//             | ((input: I3) => RopResult<I4, ErrType>) )[]
+// ) {
+    
+    
+// }
 export function startTrack<A, ErrType>(firstResult: RopResult<A, ErrType>) {
     return new RopBind(firstResult)
     // return {
@@ -212,6 +234,14 @@ export module Validations {
             return fail( { errorDescription: 'Must not be empty' }  )
         } else {
             return pass(subject.toString() )
+        }
+    }
+    export function isInteger(subject: number): 
+        RopResult<number, PropertyError> {
+        if (subject % 1 !== 0) {
+            return fail( { errorDescription: 'Must be integer' }  )
+        } else {
+            return pass(subject)
         }
     }
     export function isCorrectLen(min: number, max: number, subject: string): 

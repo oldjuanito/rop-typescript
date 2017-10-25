@@ -1,6 +1,7 @@
 export const enum PrimitiveIdentifierConsts {
     SingleLineText  = 'SingleLineText' ,
     Money  = 'Money',
+    PositiveInteger = 'PositiveInteger',
     MultiLineText  = 'MultiLineText',
     FileInput  = 'FileInput',
     Choices = 'Choices' ,
@@ -17,6 +18,7 @@ export type PrimitiveIdentifier =
     | PrimitiveIdentifierConsts.SingleLineText
     | PrimitiveIdentifierConsts.FutureDate
     | PrimitiveIdentifierConsts.PastDate
+    | PrimitiveIdentifierConsts.PositiveInteger
 
 export interface UserDefinedFieldDefinition {
     label: string ,

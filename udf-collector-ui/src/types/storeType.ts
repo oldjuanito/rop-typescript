@@ -14,6 +14,7 @@ import { RequiredFutureDate } from '../commons/types/requiredFutureDate'
 import { RequiredLongAnswer } from '../commons/types/requiredLongAnswer'
 import { RequiredPastDate } from '../commons/types/requiredPastDate'
 import { List } from 'immutable'
+import { RequiredPositiveInteger } from '../commons/types/RequiredPositiveInteger';
 
 export interface StoreState {
     languageName: string
@@ -57,6 +58,11 @@ function createFactory(primitiveType: PrimitiveIdentifier, choices: string[], pr
                 label: propName,
                 fromRendition: RequiredLongAnswer.tryCreate
             })
+        case PrimitiveIdentifierConsts.PositiveInteger:
+            return createTxtValueApplier({
+                label: propName,
+                fromRendition: RequiredPositiveInteger.tryCreate
+            })
         default:
             return createTxtValueApplier({
                 label: propName,
@@ -78,21 +84,24 @@ function createSample(propName: string, primitiveType: PrimitiveIdentifier) {
 
 export function createSampleUdfStores() {
     return List([
-        createSample('Explain product', PrimitiveIdentifierConsts.MultiLineText),
+        createSample('Primitive Type Name', PrimitiveIdentifierConsts.MultiLineText),
+        createSample('Minimum Length', PrimitiveIdentifierConsts.MultiLineText),
+        createSample('Maximum Length', PrimitiveIdentifierConsts.MultiLineText)
+        // createSample('Explain product', PrimitiveIdentifierConsts.MultiLineText),
         // createSample('Date of Produced', PrimitiveIdentifierConsts.PastDate), // suspected culprit of slow dowsn (maybe date regex)
         // createSample('Date of Purchase', PrimitiveIdentifierConsts.FutureDate),
-        createSample('Amount of Purchase7', PrimitiveIdentifierConsts.Money),
-        createSample('Amount of Purchase6', PrimitiveIdentifierConsts.Money),
-        createSample('lol', PrimitiveIdentifierConsts.Choices),
-        createSample('peter', PrimitiveIdentifierConsts.FileInput),
-        createSample('name', PrimitiveIdentifierConsts.SingleLineText),
-        createSample('name1', PrimitiveIdentifierConsts.SingleLineText),
-        createSample('name2', PrimitiveIdentifierConsts.SingleLineText),
-        createSample('name3', PrimitiveIdentifierConsts.SingleLineText),
-        createSample('name4', PrimitiveIdentifierConsts.SingleLineText),
-        createSample('Amount of Purchase 2', PrimitiveIdentifierConsts.Money),
-        createSample('Amount of Purchase3', PrimitiveIdentifierConsts.Money),
-        createSample('Amount of Purchase4', PrimitiveIdentifierConsts.Money),
-        createSample('Amount of Purchase5', PrimitiveIdentifierConsts.Money),
+        // createSample('Amount of Purchase7', PrimitiveIdentifierConsts.Money),
+        // createSample('Amount of Purchase6', PrimitiveIdentifierConsts.Money),
+        // createSample('lol', PrimitiveIdentifierConsts.Choices),
+        // createSample('peter', PrimitiveIdentifierConsts.FileInput),
+        // createSample('name', PrimitiveIdentifierConsts.SingleLineText),
+        // createSample('name1', PrimitiveIdentifierConsts.SingleLineText),
+        // createSample('name2', PrimitiveIdentifierConsts.SingleLineText),
+        // createSample('name3', PrimitiveIdentifierConsts.SingleLineText),
+        // createSample('name4', PrimitiveIdentifierConsts.PositiveInteger),
+        // createSample('Amount of Purchase 2', PrimitiveIdentifierConsts.Money),
+        // createSample('Amount of Purchase3', PrimitiveIdentifierConsts.Money),
+        // createSample('Amount of Purchase4', PrimitiveIdentifierConsts.Money),
+        // createSample('Amount of Purchase5', PrimitiveIdentifierConsts.Money),
     ])
 }
