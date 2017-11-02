@@ -8,9 +8,11 @@ describe('WorkflowStep', () => {
 
       const context:CustomHashTypeDefinition = {
         name: 'BlogEntry',
-        properties: [
-          
-        ]
+        properties:  { 
+             'DateCreated' : { name: 'PastDate', basePrimitiveType: 'Date'},
+             'DateModified' : { name: 'PastDate', basePrimitiveType: 'Date'} 
+          }
+        
       }
       //act
 

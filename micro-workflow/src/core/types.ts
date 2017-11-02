@@ -11,9 +11,12 @@ export interface CustomPrimitiveTypeDefinition {
     readonly basePrimitiveType: BasePrimitiveType
 }
 
+interface PropertiesHash {
+    readonly [properties:string]:  TypeDefinition
+}
 export interface CustomHashTypeDefinition {
-    readonly name:string
-    readonly properties: TypeDefinition[]
+    readonly name:string,
+    readonly properties:  PropertiesHash
 }
 
 export type TypeDefinition =  
