@@ -21,11 +21,11 @@ export function getErrorsAsString(errs: PropertyError[]) {
 }
 export type RopResult<T, ErrType>  =  Good<T> | Bad<ErrType>
 
-function pass<T>(payload: T): Good<T> {
+export function pass<T>(payload: T): Good<T> {
     return { kind: GOOD,  payload }
 }
 
-function fail<T>(error: T): Bad<T> {
+export function fail<T>(error: T): Bad<T> {
     return { kind: BAD, error }
 }
 // function failWithDesc(error: string): Bad<PropertyError> {
