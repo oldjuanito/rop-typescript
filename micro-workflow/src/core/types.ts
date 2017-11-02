@@ -19,8 +19,18 @@ export interface CustomHashTypeDefinition {
     readonly properties:  PropertiesHash
 }
 
+export type BindingPath = string[]
 export type TypeDefinition =  
     CustomHashTypeDefinition 
     | CustomPrimitiveTypeDefinition
     | BasePrimitiveType
     | BaseCollectionType
+
+export function GetDateValue(bindingPath: BindingPath, 
+    currDataContext:{} ) {
+        let currPointer = currDataContext;
+        for (var pathStep = 0; pathStep < bindingPath.length; pathStep++) {
+            currPointer = currPointer[bindingPath[pathStep]];
+        }
+        return <Date>currPointer;
+    }
