@@ -1,8 +1,7 @@
 import {fail, pass} from '../../../udf-collector-ui/src/commons/rop/rop'
-export class DateWorkflowStep {
-    constructor() {
-
-    }
+export interface WorkflowFuncDefinition {
+    readonly InputDefinitions: FunctionInputDefinition
+    
 }
 
 export function DateMustBeLess(date1: Date, date2: Date) {
