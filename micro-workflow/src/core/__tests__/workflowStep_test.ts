@@ -1,20 +1,13 @@
 import { validateBindingPath, validateBindingPathWithType } from '../bindingPathHelpers';
-import {WorkflowStepInstanceDefinition, TypeDefinition,  CustomPrimitiveTypeDefinition} from '../types';
 import {
     BindingPath,
     CustomHashTypeDefinition,
-    GetDateValue,
+    getDateValue,
     TypeDefinitionKind
 } from '../types';
-import { DateMustBeLess, stepInstanceApply, WorkflowFuncDefinition } from '../workflowStep';
+import { DateMustBeLess, PastDateType,  WorkflowFuncDefinition } from '../workflowStep';
 import { GOOD } from '../../../../udf-collector-ui/src/commons/rop/rop';
 
-// custom type definition (not the runtime data)
-const PastDateType:CustomPrimitiveTypeDefinition = { 
-  kind: TypeDefinitionKind.CustomPrimitiveTypeDefinitionName,
-  name: 'PastDate', 
-  basePrimitiveType: 'Date'
-}
 
 const blogEntryType:CustomHashTypeDefinition = {
   kind: TypeDefinitionKind.CustomHashTypeDefinition,
@@ -49,8 +42,8 @@ describe('WorkflowStep', () => {
       const pathToDate1:BindingPath = ['BlogEntry' , 'DateCreated']
       const pathToDate2:BindingPath = ['BlogEntry' , 'DateModified']
 
-      const date1 = GetDateValue(pathToDate1, contextData)
-      const date2 = GetDateValue(pathToDate2, contextData)
+      const date1 = getDateValue(pathToDate1, contextData)
+      const date2 = getDateValue(pathToDate2, contextData)
 
       //act
       const ropResult = DateMustBeLess(date1, date2)
@@ -63,17 +56,12 @@ describe('WorkflowStep', () => {
     it('validates binding path', () => {
       //arrange
       // the data that would appear at runtime
-      const contextData = { 
-        'blogEntry' : {
-          'DateCreated' : new Date(),
-          'DateModified' : new Date()
-        } 
-      }
+     
+      
       //use the type descriptor to capture the values from the data?
       //mapping of custom type from workflow context to func params
       // notice blogEntry is the name of the property in root, NOT the the TYPE name
       const pathToDate1:BindingPath = ['blogEntry' , 'DateCreated']
-      const pathToDate2:BindingPath = ['blogEntry' , 'DateModified']
 
 
       //act
@@ -106,21 +94,16 @@ describe('WorkflowStep', () => {
       const pathToDate1:BindingPath = ['blogEntry' , 'DateCreated']
       const pathToDate2:BindingPath = ['blogEntry' , 'DateModified']
 
-      const funcDefintion:WorkflowFuncDefinition = {
-        InputDefinitions: [
-          { name: 'date1', inputType: PastDateType },
-          { name: 'date2', inputType: PastDateType }
-        ]
-      }
       
       const stepInstance:WorkflowStepInstanceDefinition = {
-         functionDefId: 'DateMustBeLess',
+         functionDefId: 'DateMustBeLessStep',
+         inputConstants: {},
          inputBindings: {
           'date1': pathToDate1,
           'date2': pathToDate2
          },
-         ReplaceContext: true,
-         DoWhenOutputPathExists: 'replace' 
+         replaceContext: true,
+         doWhenOutputPathExists: 'replace' 
       }
       //act
       const ropResult = stepInstanceApply(stepInstance, funcDefintion, contextData)

@@ -2,7 +2,10 @@ export type BasePrimitiveType =
     'string'
     | 'number'
     | 'Date'
-    
+export type RuntimeBasePrimitiveType =
+    string
+    | number
+    | Date
 export type BaseCollectionType =
     'array'
 
@@ -46,7 +49,7 @@ export type TypeDefinition =
     | BasePrimitiveTypeDefinition
     | BaseCollectionTypeDefinition
 
-export function GetDateValue(bindingPath: BindingPath, 
+export function getDateValue(bindingPath: BindingPath, 
     currDataContext:{} ) {
         let currPointer = currDataContext;
         for (var pathStep = 0; pathStep < bindingPath.length; pathStep++) {
@@ -54,12 +57,30 @@ export function GetDateValue(bindingPath: BindingPath,
         }
         return <Date>currPointer;
     }
+export function getNumericValue(bindingPath: BindingPath, 
+    currDataContext:{} ) {
+        let currPointer = currDataContext;
+        for (var pathStep = 0; pathStep < bindingPath.length; pathStep++) {
+            currPointer = currPointer[bindingPath[pathStep]];
+        }
+        return <number>currPointer;
+    }
+export function getStringValue(bindingPath: BindingPath, 
+    currDataContext:{} ) {
+        let currPointer = currDataContext;
+        for (var pathStep = 0; pathStep < bindingPath.length; pathStep++) {
+            currPointer = currPointer[bindingPath[pathStep]];
+        }
+        return <string>currPointer;
+    }
 
 
 export interface TypeDefinitionId {
     readonly kind: TypeDefinitionKind
     readonly customTypeName: string
 }
+
+
 /*
 a function needs a wrapper defintion that provides the inputs required
     - a readonly public inputdefinitions hash describing the input to expect
