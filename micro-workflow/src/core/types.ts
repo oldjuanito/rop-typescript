@@ -55,21 +55,6 @@ export function GetDateValue(bindingPath: BindingPath,
         return <Date>currPointer;
     }
 
-export interface FunctionInputDefinition {
-    readonly name: string
-    readonly inputType: TypeDefinition
-}
-
-interface InputBindingsHash {
-    readonly [inputs:string]:  BindingPath
-}
-
-export interface WorkflowStepInstanceDefinition {
-    readonly functionDefId: string
-    readonly inputBindings: InputBindingsHash
-    readonly ReplaceContext: boolean
-    readonly DoWhenOutputPathExists: 'replace' | 'append'
-}
 
 export interface TypeDefinitionId {
     readonly kind: TypeDefinitionKind
