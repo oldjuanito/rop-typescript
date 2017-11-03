@@ -6,7 +6,26 @@ export type BasePrimitiveType =
 export type BaseCollectionType =
     'array'
 
+export interface BasePrimitiveTypeDefinition {
+    readonly kind: 'string' | 'number' | 'Date'
+}
+// export const BaseCollectionTypeDefinitionName = 'BaseCollectionTypeDefinition'
+// export const CustomPrimitiveTypeDefinitionName = 'CustomPrimitiveTypeDefinition'
+export enum TypeDefinitionKind {
+    BaseCollectionTypeDefinitionName = 'BaseCollectionTypeDefinition',
+    CustomPrimitiveTypeDefinitionName = 'CustomPrimitiveTypeDefinition' , 
+    CustomHashTypeDefinition = 'CustomHashTypeDefinition',
+    BaseString = 'string',
+    BaseNumber = 'number',
+    BaseDate =  'Date',
+    InvalidType = 'INVALID'
+} 
+export interface BaseCollectionTypeDefinition {
+    readonly kind: TypeDefinitionKind.BaseCollectionTypeDefinitionName
+}
+
 export interface CustomPrimitiveTypeDefinition {
+    readonly kind: TypeDefinitionKind.CustomPrimitiveTypeDefinitionName
     readonly name:string
     readonly basePrimitiveType: BasePrimitiveType
 }
@@ -15,6 +34,7 @@ interface PropertiesHash {
     readonly [properties:string]:  TypeDefinition
 }
 export interface CustomHashTypeDefinition {
+    readonly kind: TypeDefinitionKind.CustomHashTypeDefinition
     readonly name:string,
     readonly properties:  PropertiesHash
 }
@@ -23,8 +43,8 @@ export type BindingPath = string[]
 export type TypeDefinition =  
     CustomHashTypeDefinition 
     | CustomPrimitiveTypeDefinition
-    | BasePrimitiveType
-    | BaseCollectionType
+    | BasePrimitiveTypeDefinition
+    | BaseCollectionTypeDefinition
 
 export function GetDateValue(bindingPath: BindingPath, 
     currDataContext:{} ) {
@@ -51,37 +71,59 @@ export interface WorkflowStepInstanceDefinition {
     readonly DoWhenOutputPathExists: 'replace' | 'append'
 }
 
-export function validateBindingPath(contextType: CustomHashTypeDefinition,
+export function getBindingPathProp(contextType: CustomHashTypeDefinition,
     bindingPath: BindingPath ) {
         let currPointer = contextType.properties;
+        let currPropType: string = TypeDefinitionKind.InvalidType
+        let propName = ''
         for (var pathStep = 0; pathStep < bindingPath.length; pathStep++) {
-            const currProp = currPointer[bindingPath[pathStep]];
+            const bindStep = bindingPath[pathStep]
+            // console.log(bindStep)
+            const currProp = currPointer[bindStep];
+            currPropType = currProp.kind
+            // console.log(currProp)
             if (!currProp) { //is undefined??
-                return false
+                return {
+                    kind: TypeDefinitionKind.InvalidType,
+                    customTypeName: ''
+                 }
+            }
+            
+            if (currProp.kind === TypeDefinitionKind.CustomHashTypeDefinition) {
+                currPointer = currProp.properties
+            }
+            if (currProp.kind === TypeDefinitionKind.CustomHashTypeDefinition || currProp.kind === TypeDefinitionKind.CustomPrimitiveTypeDefinitionName) {
+                propName = currProp.name
             }
         }
-        return true
+        return {
+            kind: currPropType,
+            customTypeName: propName
+         }
     }
+export function validateBindingPath(contextType: CustomHashTypeDefinition,
+    bindingPath: BindingPath ) {
+        const leafKind = getBindingPathProp(contextType, bindingPath).kind
+        return leafKind !== TypeDefinitionKind.InvalidType
+    }
+export interface TypeDefinitionId {
+    readonly kind: TypeDefinitionKind
+    readonly customTypeName: string
+}
+
 export function validateBindingPathWithType(contextType: CustomHashTypeDefinition,
     bindingPath: BindingPath,
-    validType:CustomPrimitiveTypeDefinition ) {
-        let currPointer = contextType.properties
-        let currProp = null
-        for (var pathStep = 0; pathStep < bindingPath.length; pathStep++) {
-            currProp = currPointer[bindingPath[pathStep]];
-            if (!currProp) { //is undefined??
+    validType:TypeDefinitionId ) {
+        const leafTypeId = getBindingPathProp(contextType, bindingPath)
+        // console.log(currProp.kind)
+        switch (leafTypeId.kind) {
+            case TypeDefinitionKind.CustomPrimitiveTypeDefinitionName:
+                return leafTypeId.customTypeName === validType.customTypeName
+            case TypeDefinitionKind.BaseCollectionTypeDefinitionName:
+                return validType.kind === TypeDefinitionKind.BaseCollectionTypeDefinitionName
+            default:
                 return false
-            }
         }
-        if (currProp == TypeDefinition) 
-        // how to check if it is eehter a CustomPrimitiveTypeDefinition or Collection
-        if (CustomPrimitiveTypeDefinition) {
-            const primType:CustomPrimitiveTypeDefinition = currProp
-            return primType.name == validType.name
-        }
-        if (BaseCollectionType && validType == BaseCollectionType)
-            return true
-
     }
 /*
 a function needs a wrapper defintion that provides the inputs required

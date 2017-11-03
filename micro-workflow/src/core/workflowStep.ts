@@ -1,3 +1,4 @@
+import {FunctionInputDefinition} from './types';
 import {fail, pass} from '../../../udf-collector-ui/src/commons/rop/rop'
 export interface WorkflowFuncDefinition {
     readonly InputDefinitions: FunctionInputDefinition
