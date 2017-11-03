@@ -5,7 +5,12 @@ import {
     getDateValue,
     TypeDefinitionKind
 } from '../types';
-import { DateMustBeLess, PastDateType,  WorkflowFuncDefinition } from '../workflowStep';
+import {
+    DateMustBeLess,
+    DateMustBeLessStep,
+    PastDateType,
+    WorkflowStepInstanceDefinition,
+} from '../workflowStep';
 import { GOOD } from '../../../../udf-collector-ui/src/commons/rop/rop';
 
 
@@ -105,11 +110,14 @@ describe('WorkflowStep', () => {
          replaceContext: true,
          doWhenOutputPathExists: 'replace' 
       }
-      //act
-      const ropResult = stepInstanceApply(stepInstance, funcDefintion, contextData)
 
+      const globalFuncDefs = {'DateMustBeLessStep': DateMustBeLessStep}
+      //act
+      const ropResult = globalFuncDefs[stepInstance.functionDefId].stepInstanceApply(stepInstance, contextData)
+      //somehow we have to return instead of callbacks to avoid an increase in the callstack
+      //  at least making a distinction between async (use async keyword) and non-async (return inmedialety)
 
       //assert
-      expect(ropResult).toEqual({ kind: GOOD, payload:  date1 }) 
+      expect(ropResult).toEqual({ kind: GOOD, payload:  {} }) 
     })
   });

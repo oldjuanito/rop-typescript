@@ -58,13 +58,15 @@ export class WorkflowFuncDefinition {
         }
     }
     stepInstanceApply(stepInstance: WorkflowStepInstanceDefinition, 
-        funcDef: WorkflowFuncDefinition, 
         contextData: {}) {
             let inputValues:InputValuesHash = {            
             }
-            const inputBindingsKeys = stepInstance.inputBindings.keys
-            for (var inputBindingsIdx = 0; inputBindingsIdx < inputBindingsKeys.length; inputBindingsIdx++) {
-                const inputKey = inputBindingsKeys[inputBindingsIdx]
+            // const inputBindingsKeys = stepInstance.inputBindings.keys
+            // for (var inputBindingsIdx = 0; inputBindingsIdx < inputBindingsKeys.length; inputBindingsIdx++) {
+            //     const inputKey = inputBindingsKeys[inputBindingsIdx] 
+            for (var inputKey in stepInstance.inputBindings) {
+                console.log('stepInstanceApply ' + inputKey)
+                // const inputKey = inputBindingsKeys[inputBindingsIdx]
                 const pathToValue = stepInstance.inputBindings[inputKey]
                 const typeExpected = this.inputDefinitions[this.inputNamesToIdx[inputKey]].inputType
                 if (typeExpected.kind === TypeDefinitionKind.CustomPrimitiveTypeDefinitionName) {
