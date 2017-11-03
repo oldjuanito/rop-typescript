@@ -1,10 +1,10 @@
-import {CustomPrimitiveTypeDefinition, validateBindingPath} from '../types';
+import { validateBindingPath, validateBindingPathWithType } from '../bindingPathHelpers';
+import { CustomPrimitiveTypeDefinition} from '../types';
 import {
     BindingPath,
     CustomHashTypeDefinition,
     GetDateValue,
-    TypeDefinitionKind,
-    validateBindingPathWithType,
+    TypeDefinitionKind
 } from '../types';
 import {DateMustBeLess} from '../workflowStep';
 import { GOOD } from '../../../../udf-collector-ui/src/commons/rop/rop';
