@@ -85,7 +85,9 @@ export function validateBindingPathWithType(contextType: CustomHashTypeDefinitio
     }
 /*
 a function needs a wrapper defintion that provides the inputs required
-
+    - a readonly public inputdefinitions hash describing the input to expect
+    - APply function given a hash of the expected outpust, keys by input name
 an instance defines a step placed int he workflow and its input/output mapping
 
+workflow engine checks the validity of the binding path and its leaf type being compat with the input
 */
