@@ -40,7 +40,25 @@ export interface WorkflowStepInstanceDefinition {
     readonly replaceContext: boolean
     readonly doWhenOutputPathExists: 'replace' | 'append'
 }
+export interface WorkflowStepInstanceDefinitionRendition {
+    readonly functionDefId: string
+    readonly inputBindings: InputBindingsHash
+    readonly inputConstants?: InputConstantsHash
+    readonly replaceContext?: boolean
+    readonly doWhenOutputPathExists?: 'replace' | 'append'
+}
 
+export function applyDefinitionDefaults(rend:WorkflowStepInstanceDefinitionRendition) {
+    
+    const stepInstance:WorkflowStepInstanceDefinition = {
+        functionDefId: rend.functionDefId,
+        inputConstants: rend.inputConstants ? rend.inputConstants : {},
+        inputBindings: rend.inputBindings,
+        replaceContext: rend.replaceContext ? rend.replaceContext : false,
+        doWhenOutputPathExists: rend.doWhenOutputPathExists ? rend.doWhenOutputPathExists : 'replace' 
+     }
+     return stepInstance
+}
 type HashResultForWorkflow = {}
 type SuccessCallback = (result:HashResultForWorkflow) => void
 type FailureCallback = (err:PropertyError[]) => void

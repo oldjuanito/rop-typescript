@@ -8,6 +8,7 @@ import {
 import {
     DateMustBeLess,
     DateMustBeLessStep,
+    applyDefinitionDefaults,
     PastDateType,
     WorkflowStepInstanceDefinition,
 } from '../workflowStep';
@@ -100,17 +101,25 @@ describe('WorkflowStep', () => {
       const pathToDate2:BindingPath = ['blogEntry' , 'DateModified']
 
       
-      const stepInstance:WorkflowStepInstanceDefinition = {
-         functionDefId: 'DateMustBeLessStep',
-         inputConstants: {},
-         inputBindings: {
-          'date1': pathToDate1,
-          'date2': pathToDate2
-         },
-         replaceContext: true,
-         doWhenOutputPathExists: 'replace' 
-      }
-
+      // const stepInstance:WorkflowStepInstanceDefinition = {
+      //    functionDefId: 'DateMustBeLessStep',
+      //    inputConstants: {},
+      //    inputBindings: {
+      //     'date1': pathToDate1,
+      //     'date2': pathToDate2
+      //    },
+      //    replaceContext: true,
+      //    doWhenOutputPathExists: 'replace' 
+      // }
+      const stepInstance = applyDefinitionDefaults(
+        {
+          functionDefId: 'DateMustBeLessStep',
+          inputBindings: {
+           'date1': pathToDate1,
+           'date2': pathToDate2
+          }
+        }
+      );
       const globalFuncDefs = {'DateMustBeLessStep': DateMustBeLessStep}
       //act
       const ropResult = globalFuncDefs[stepInstance.functionDefId].stepInstanceApply(stepInstance, contextData)
