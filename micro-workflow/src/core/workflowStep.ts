@@ -1,6 +1,5 @@
 import {CustomPrimitiveTypeDefinition} from './types';
 import {
-    BasePrimitiveType,
     BasePrimitiveTypeDefinition,
     BindingPath,
     getDateValue,
@@ -59,24 +58,24 @@ export function applyDefinitionDefaults(rend:WorkflowStepInstanceDefinitionRendi
      }
      return stepInstance
 }
-type HashResultForWorkflow = {}
-type SuccessCallback = (result:HashResultForWorkflow) => void
-type FailureCallback = (err:PropertyError[]) => void
-type ApplierFunc = (inputs:InputValuesHash
-    , onSuccess:SuccessCallback
-    , onFailure: FailureCallback) => void //we can trust that the runtime engine has provided all the inputs defined
+type HashResultForWorkflow = RuntimeBasePrimitiveType | Array<RuntimeBasePrimitiveType | {}> | {}
+export type ResultForWorkflow = RopResult<HashResultForWorkflow,PropertyError[]>
+export type AsyncResultForWorkflow = Promise<RopResult<HashResultForWorkflow,PropertyError[]>>
+ 
+type ApplierFunc = (inputs:InputValuesHash) => ResultForWorkflow //we can trust that the runtime engine has provided all the inputs defined
 export class WorkflowFuncDefinition {
     private inputNamesToIdx = {}
     constructor(
         readonly inputConstantsDefinitions: FunctionConstantInputDefinition[]
         , readonly inputDefinitions: FunctionInputDefinition[]
+        , readonly outputType: TypeDefinition //this is only for design support, at runtime we just return a hash, array or primtive
     , readonly applyFunc:ApplierFunc ) {
         for (var inputIdx = 0; inputIdx < inputDefinitions.length; inputIdx++) {
             this.inputNamesToIdx[inputDefinitions[inputIdx].name] = inputIdx;
         }
     }
     stepInstanceApply(stepInstance: WorkflowStepInstanceDefinition, 
-        contextData: {}) {
+        contextData: {}) : ResultForWorkflow {
             let inputValues:InputValuesHash = {            
             }
             // const inputBindingsKeys = stepInstance.inputBindings.keys
@@ -101,18 +100,8 @@ export class WorkflowFuncDefinition {
                     }
                 }
             }
-            this.applyFunc(inputValues, 
-                function (result) {
-                    // tell workflow of a success
-                    if (stepInstance.replaceContext) {
-                        // contextData[]
-                    }
-                }, 
-                function (errs) {
-                    
-                }
-            )
-            return 
+            const result = this.applyFunc(inputValues)
+            return result
     }
     
 }
@@ -130,15 +119,14 @@ export const DateMustBeLessStep = new WorkflowFuncDefinition(
         { name: 'date1', inputType: PastDateType },
         { name: 'date2', inputType: PastDateType }
     ],
-    function (inputs, onSuccess, onFailure) {
+    {kind: 'Date' },
+    function (inputs) {
       const ropResult = DateMustBeLess(<Date>inputs['date1'], <Date>inputs['date2'])
       switch (ropResult.kind) {
         case GOOD:
-            onSuccess(ropResult.payload)
-            break;
+            return pass(ropResult.payload); // what gets returned at runtime
         default: 
-            onSuccess(ropResult.error)
-            break;
+            return fail([ ropResult.error ]);
       }
     }
 )

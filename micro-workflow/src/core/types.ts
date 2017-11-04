@@ -2,15 +2,17 @@ export type BasePrimitiveType =
     'string'
     | 'number'
     | 'Date'
+    | 'boolean'
 export type RuntimeBasePrimitiveType =
     string
     | number
     | Date
+    | boolean
 export type BaseCollectionType =
     'array'
 
 export interface BasePrimitiveTypeDefinition {
-    readonly kind: 'string' | 'number' | 'Date'
+    readonly kind: 'string' | 'number' | 'Date' | 'boolean'
 }
 // export const BaseCollectionTypeDefinitionName = 'BaseCollectionTypeDefinition'
 // export const CustomPrimitiveTypeDefinitionName = 'CustomPrimitiveTypeDefinition'
@@ -21,6 +23,7 @@ export enum TypeDefinitionKind {
     BaseString = 'string',
     BaseNumber = 'number',
     BaseDate =  'Date',
+    BaseBoolena =  'boolean',
     InvalidType = 'INVALID'
 } 
 export interface BaseCollectionTypeDefinition {

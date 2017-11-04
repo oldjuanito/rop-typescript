@@ -9,8 +9,7 @@ import {
     DateMustBeLess,
     DateMustBeLessStep,
     applyDefinitionDefaults,
-    PastDateType,
-    WorkflowStepInstanceDefinition,
+    PastDateType
 } from '../workflowStep';
 import { GOOD } from '../../../../udf-collector-ui/src/commons/rop/rop';
 
@@ -88,10 +87,11 @@ describe('WorkflowStep', () => {
 
       
       // the data that would appear at runtime
+      const myDate = new Date()
       const contextData = { 
         'blogEntry' : {
-          'DateCreated' : new Date(),
-          'DateModified' : new Date()
+          'DateCreated' : myDate,
+          'DateModified' : myDate
         } 
       }
       //use the type descriptor to capture the values from the data?
@@ -123,10 +123,10 @@ describe('WorkflowStep', () => {
       const globalFuncDefs = {'DateMustBeLessStep': DateMustBeLessStep}
       //act
       const ropResult = globalFuncDefs[stepInstance.functionDefId].stepInstanceApply(stepInstance, contextData)
-      //somehow we have to return instead of callbacks to avoid an increase in the callstack
-      //  at least making a distinction between async (use async keyword) and non-async (return inmedialety)
+      
+      // TODO: make a distinction between async (use async keyword) and non-async (return inmedialety)
 
       //assert
-      expect(ropResult).toEqual({ kind: GOOD, payload:  {} }) 
+      expect(ropResult).toEqual({ kind: GOOD, payload:  myDate }) 
     })
   });
