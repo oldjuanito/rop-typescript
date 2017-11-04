@@ -6,12 +6,11 @@ import {
     TypeDefinitionKind
 } from '../types';
 import {
-    DateMustBeLess,
-    DateMustBeLessStep,
     applyDefinitionDefaults,
     PastDateType
 } from '../workflowStep';
 import { GOOD } from '../../../../udf-collector-ui/src/commons/rop/rop';
+import {DateMustBeLess, DateMustBeLessStep} from "../dateMustBeLessStep";
 
 
 const blogEntryType:CustomHashTypeDefinition = {

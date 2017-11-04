@@ -1,15 +1,15 @@
-import {CustomPrimitiveTypeDefinition} from './types';
 import {
     BasePrimitiveTypeDefinition,
     BindingPath,
+    CustomPrimitiveTypeDefinition,
     getDateValue,
     getNumericValue,
     getStringValue,
     RuntimeBasePrimitiveType,
     TypeDefinition,
-    TypeDefinitionKind,
+    TypeDefinitionKind
 } from './types';
-import {fail, pass, RopResult, PropertyError, GOOD} from '../../../udf-collector-ui/src/commons/rop/rop'
+import {PropertyError, RopResult} from '../../../udf-collector-ui/src/commons/rop/rop'
 
 export interface FunctionInputDefinition {
     readonly name: string
@@ -113,27 +113,4 @@ export const PastDateType:CustomPrimitiveTypeDefinition = {
     basePrimitiveType: 'Date'
   }
   
-export const DateMustBeLessStep = new WorkflowFuncDefinition(
-    [],
-    [
-        { name: 'date1', inputType: PastDateType },
-        { name: 'date2', inputType: PastDateType }
-    ],
-    {kind: 'Date' },
-    function (inputs) {
-      const ropResult = DateMustBeLess(<Date>inputs['date1'], <Date>inputs['date2'])
-      switch (ropResult.kind) {
-        case GOOD:
-            return pass(ropResult.payload); // what gets returned at runtime
-        default: 
-            return fail([ ropResult.error ]);
-      }
-    }
-)
-export function DateMustBeLess(date1: Date, date2: Date) {
-    if (date1 > date2) {
-        return fail( { errorDescription: `Must be less than ${date2.toDateString()}` }  )
-    } else {
-        return pass(date1)
-    } 
-}
+
