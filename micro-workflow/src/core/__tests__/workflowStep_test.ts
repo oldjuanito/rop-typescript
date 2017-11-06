@@ -11,24 +11,8 @@ import {
 } from '../workflowStep';
 import { GOOD } from '../../../../udf-collector-ui/src/commons/rop/rop';
 import {DateMustBeLess, DateMustBeLessStep} from "../dateMustBeLessStep";
+import {contextType} from './helpers/testHelpers'
 
-
-const blogEntryType:CustomHashTypeDefinition = {
-  kind: TypeDefinitionKind.CustomHashTypeDefinition,
-  name: 'BlogEntry',
-  properties:  { 
-        'DateCreated' : PastDateType,
-        'DateModified' : PastDateType 
-    }
-}
-const contextType:CustomHashTypeDefinition = {
-  //notice the root alwasy wrap custom ones
-    kind: TypeDefinitionKind.CustomHashTypeDefinition,
-    name: 'root',
-    properties:  {
-        'blogEntry' : blogEntryType
-      }
-    }
 
 describe('WorkflowStep', () => {
     it('maps input to method param', () => {
