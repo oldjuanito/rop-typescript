@@ -1,8 +1,9 @@
+import { RunWorkflow } from '../workflowRuntime';
 import { ExecDbStep } from '../execDbStep';
 import { setValueInBindingPath, validateBindingPath, validateBindingPathWithType } from '../bindingPathHelpers';
 import { BaseBoolean, BindingPath, CustomHashTypeDefinition, getDateValue, TypeDefinitionKind } from '../types';
-import { applyDefinitionDefaults, FuncDefinitionHash, PastDateType } from '../workflowStep'
-import { GOOD } from '../../../../udf-collector-ui/src/commons/rop/rop';
+import {ResultForWorkflow, applyDefinitionDefaults,  FuncDefinitionHash,  PastDateType} from '../workflowStep';
+import { GOOD, PropertyError } from '../../../../udf-collector-ui/src/commons/rop/rop';
 import {DateMustBeLess, DateMustBeLessStep} from "../dateMustBeLessStep";
 import {contextType} from './helpers/testHelpers'
 
@@ -51,30 +52,11 @@ describe('Workflow Flow', () => {
         }
       )
       const globalFuncDefs: FuncDefinitionHash = {'DateMustBeLessStep': DateMustBeLessStep, 'ExecDbStep': ExecDbStep}
-
+      const instances = [stepInstance, stepInstance2]
       // act 
-      const ropResult1 = globalFuncDefs[stepInstance.functionDefId].stepInstanceApply(stepInstance, contextData)
-      switch (ropResult1.kind) {
-        case GOOD:
-            setValueInBindingPath(contextType, stepInstance.outputBinding, contextData, 
-                                  ropResult1.payload, stepInstance.doWhenOutputPathExists === 'append')
-            console.log('Step1 done: ' + JSON.stringify(contextData))
-            const ropResult2 = globalFuncDefs[stepInstance2.functionDefId].stepInstanceApply(stepInstance2, contextData)
-            switch (ropResult2.kind) {
-              case GOOD:
-                setValueInBindingPath(contextType, stepInstance2.outputBinding, contextData, 
-                                      ropResult2.payload, stepInstance2.doWhenOutputPathExists === 'append')
-                console.log('Step2 done: ' + JSON.stringify(contextData))
-              default:
-                  return
-            }
-        default:
-            return
-      }
-      
-      // TODO: make a distinction between async (use async keyword) and non-async (return inmedialety)
 
+      const lastResult = RunWorkflow(globalFuncDefs, instances, contextType, contextData )
       // assert
-      expect(ropResult2).toEqual({ kind: GOOD, payload:  true }) 
+      expect(lastResult).toEqual({ kind: GOOD, payload:  true }) 
     })
   })
