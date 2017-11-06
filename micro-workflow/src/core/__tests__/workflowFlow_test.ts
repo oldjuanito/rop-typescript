@@ -1,18 +1,14 @@
-import { RunWorkflow } from '../workflowRuntime';
+import { RunWorkflow, RunWorkflowInTestMode } from '../workflowRuntime';
 import { ExecDbStep } from '../execDbStep';
 import { setValueInBindingPath, validateBindingPath, validateBindingPathWithType } from '../bindingPathHelpers';
 import { BaseBoolean, BindingPath, CustomHashTypeDefinition, getDateValue, TypeDefinitionKind } from '../types';
-import {ResultForWorkflow, applyDefinitionDefaults,  FuncDefinitionHash,  PastDateType} from '../workflowStep';
-import { GOOD, PropertyError } from '../../../../udf-collector-ui/src/commons/rop/rop';
+import {ResultForWorkflow, applyDefinitionDefaults,  FuncDefinitionHash,  PastDateType} from '../workflowStep'
+import { GOOD, PropertyError } from '../../../../udf-collector-ui/src/commons/rop/rop'
 import {DateMustBeLess, DateMustBeLessStep} from "../dateMustBeLessStep";
 import {contextType} from './helpers/testHelpers'
 
 
 describe('Workflow Flow', () => {
-      
-    it('uns the steps', () => {
-      // arrange
-
       
       // the data that would appear at runtime
       const myDate = new Date()
@@ -53,10 +49,21 @@ describe('Workflow Flow', () => {
       )
       const globalFuncDefs: FuncDefinitionHash = {'DateMustBeLessStep': DateMustBeLessStep, 'ExecDbStep': ExecDbStep}
       const instances = [stepInstance, stepInstance2]
-      // act 
 
-      const lastResult = RunWorkflow(globalFuncDefs, instances, contextType, contextData )
-      // assert
-      expect(lastResult).toEqual({ kind: GOOD, payload:  true }) 
-    })
+      it('runs the steps', () => {
+        // arrange
+
+        // act 
+        const lastResult = RunWorkflow(globalFuncDefs, instances, contextType, contextData )
+        // assert
+        expect(lastResult).toEqual({ kind: GOOD, payload:  true }) 
+      })
+      it('runs the steps in Test mode', () => {
+        // arrange
+
+        // act 
+        const lastResult = RunWorkflowInTestMode(globalFuncDefs, instances, contextType, contextData )
+        // assert
+        expect(lastResult).toEqual({ kind: GOOD, payload:  false }) 
+      })
   })

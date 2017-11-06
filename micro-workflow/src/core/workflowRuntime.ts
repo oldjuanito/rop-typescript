@@ -3,6 +3,26 @@ import { FuncDefinitionHash, ResultForWorkflow, WorkflowStepInstanceDefinition }
 import { setValueInBindingPath } from './bindingPathHelpers'
 import { PropertyError, GOOD, pass } from '../../../udf-collector-ui/src/commons/rop/rop'
 
+export function RunWorkflowInTestMode(globalFuncDefs: FuncDefinitionHash, instances: WorkflowStepInstanceDefinition[], 
+                                      contextType: CustomHashTypeDefinition, contextData: {}) { 
+    let lastResult: ResultForWorkflow = pass(contextData)
+    let currErrors: PropertyError[] = []
+    for (var stepIdx = 0; stepIdx < instances.length && currErrors.length === 0; stepIdx++ ) {
+        const currStepInstance = instances[stepIdx]
+        lastResult = globalFuncDefs[currStepInstance.functionDefId].stepInstanceApplyTest(currStepInstance, contextData)
+        
+        switch (lastResult.kind) {
+            case GOOD:
+                setValueInBindingPath(contextType, currStepInstance.outputBinding, contextData, 
+                                      lastResult.payload, currStepInstance.doWhenOutputPathExists === 'append')
+                break
+            default:
+                currErrors = lastResult.error
+                break
+        }
+    }
+    return lastResult
+}
 export function RunWorkflow(globalFuncDefs: FuncDefinitionHash, instances: WorkflowStepInstanceDefinition[], 
                             contextType: CustomHashTypeDefinition, contextData: {}) { 
     let lastResult: ResultForWorkflow = pass(contextData)
@@ -14,7 +34,7 @@ export function RunWorkflow(globalFuncDefs: FuncDefinitionHash, instances: Workf
         switch (lastResult.kind) {
             case GOOD:
                 setValueInBindingPath(contextType, currStepInstance.outputBinding, contextData, 
-                                    lastResult.payload, currStepInstance.doWhenOutputPathExists === 'append')
+                                      lastResult.payload, currStepInstance.doWhenOutputPathExists === 'append')
                 console.log('Step done: ' + JSON.stringify(contextData))
                 break
             default:

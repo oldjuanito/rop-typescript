@@ -34,5 +34,10 @@ export const ExecDbStep = new WorkflowFuncDefinition(
     },
     function (inputs: InputConstantsHash, defintion: WorkflowFuncDefinition) {
         // generate the input based on the constants 
+    },
+    function (inputs: InputValuesHash, inputConstants: InputConstantsHash, 
+              inputDefinitionsUsed: FunctionInputDefinition[]) {
+        console.log('I am in test mode!')
+        return pass(false) 
     }
 )

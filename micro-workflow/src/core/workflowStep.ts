@@ -79,7 +79,8 @@ export class WorkflowFuncDefinition {
             , readonly outputType: TypeDefinition 
                 // this is only for design support, at runtime we just return a hash, array or primtive
             , readonly applyFunc: ApplierFunc
-            , readonly constantsApplyFunc: ConstInputApplierFunc = emptyFunc ) {
+            , readonly constantsApplyFunc: ConstInputApplierFunc = emptyFunc
+            , readonly applyFuncForTest?: ApplierFunc ) {
         for (let constInputIdx = 0; constInputIdx < inputConstantsDefinitions.length; constInputIdx++) {
             this.constInputNamesToIdx[inputConstantsDefinitions[constInputIdx].name] = constInputIdx
         }
@@ -92,32 +93,41 @@ export class WorkflowFuncDefinition {
         this.constantsApplyFunc(stepInstance.inputConstants, this)
         
     }
+    stepInstanceApplyTest(stepInstance: WorkflowStepInstanceDefinition, 
+                          contextData: {}): ResultForWorkflow {
+        return this.doFuncApply(stepInstance, contextData, this.applyFuncForTest || this.applyFunc)
+    }
     stepInstanceApply(stepInstance: WorkflowStepInstanceDefinition, 
                       contextData: {}): ResultForWorkflow {
-            let inputValues: InputValuesHash = {            
-            }
-            for (let inputKey in stepInstance.inputBindings) {
-                if (stepInstance.inputBindings.hasOwnProperty(inputKey)) {
-                    // console.log('stepInstanceApply ' + inputKey + ' in ' + stepInstance.functionDefId)
-                    const pathToValue = stepInstance.inputBindings[inputKey]
-                    const typeExpected = this.inputDefinitions[this.inputNamesToIdx[inputKey]].inputType
-                    if (typeExpected.kind === TypeDefinitionKind.CustomPrimitiveTypeDefinitionName) {
-                        switch (typeExpected.basePrimitiveType) {
-                            case 'number':
-                                inputValues[inputKey]  = getNumericValue(pathToValue, contextData)
-                                break
-                            case 'Date':
-                                inputValues[inputKey]  = getDateValue(pathToValue, contextData)
-                                break
-                            default: // treat as string
-                                inputValues[inputKey]  = getStringValue(pathToValue, contextData)
-                                break
-                        }
-                    }
+        return this.doFuncApply(stepInstance, contextData, this.applyFunc)
+    }
+    private doFuncApply(stepInstance: WorkflowStepInstanceDefinition, 
+                        contextData: {},
+                        funcToUse: ApplierFunc): ResultForWorkflow {
+        let inputValues: InputValuesHash = {            
+        }
+        for (let inputKey in stepInstance.inputBindings) {
+        if (stepInstance.inputBindings.hasOwnProperty(inputKey)) {
+            // console.log('stepInstanceApply ' + inputKey + ' in ' + stepInstance.functionDefId)
+            const pathToValue = stepInstance.inputBindings[inputKey]
+            const typeExpected = this.inputDefinitions[this.inputNamesToIdx[inputKey]].inputType
+            if (typeExpected.kind === TypeDefinitionKind.CustomPrimitiveTypeDefinitionName) {
+                switch (typeExpected.basePrimitiveType) {
+                    case 'number':
+                        inputValues[inputKey]  = getNumericValue(pathToValue, contextData)
+                        break
+                    case 'Date':
+                        inputValues[inputKey]  = getDateValue(pathToValue, contextData)
+                        break
+                    default: // treat as string
+                        inputValues[inputKey]  = getStringValue(pathToValue, contextData)
+                        break
                 }
             }
-            const result = this.applyFunc(inputValues, stepInstance.inputConstants, this.inputDefinitions)
-            return result
+        }
+        }
+        const result = funcToUse(inputValues, stepInstance.inputConstants, this.inputDefinitions)
+        return result
     }
     
 }
