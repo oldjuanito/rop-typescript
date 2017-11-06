@@ -1,4 +1,4 @@
-import {CustomHashTypeDefinition, TypeDefinitionKind} from "../../types";
+import { BaseBoolean, CustomHashTypeDefinition, TypeDefinitionKind } from '../../types'
 import {PastDateType} from '../../workflowStep'
 
 export const blogEntryType: CustomHashTypeDefinition = {
@@ -6,7 +6,8 @@ export const blogEntryType: CustomHashTypeDefinition = {
     name: 'BlogEntry',
     properties:  {
         'DateCreated' : PastDateType,
-        'DateModified' : PastDateType
+        'DateModified' : PastDateType,
+        'WasSaved' : BaseBoolean
     }
 }
 export const contextType: CustomHashTypeDefinition = {

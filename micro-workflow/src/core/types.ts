@@ -14,6 +14,12 @@ export type BaseCollectionType =
 export interface BasePrimitiveTypeDefinition {
     readonly kind: 'string' | 'number' | 'Date' | 'boolean'
 }
+
+export const BaseString: BasePrimitiveTypeDefinition = { kind: 'string' }
+export const BaseNumber: BasePrimitiveTypeDefinition = { kind: 'number' } 
+export const BaseDate: BasePrimitiveTypeDefinition =  { kind: 'Date' } 
+export const BaseBoolean: BasePrimitiveTypeDefinition =  { kind: 'boolean' }
+
 // export const BaseCollectionTypeDefinitionName = 'BaseCollectionTypeDefinition'
 // export const CustomPrimitiveTypeDefinitionName = 'CustomPrimitiveTypeDefinition'
 export enum TypeDefinitionKind {
@@ -23,7 +29,7 @@ export enum TypeDefinitionKind {
     BaseString = 'string',
     BaseNumber = 'number',
     BaseDate =  'Date',
-    BaseBoolena =  'boolean',
+    BaseBoolean =  'boolean',
     InvalidType = 'INVALID'
 } 
 export interface BaseCollectionTypeDefinition {

@@ -20,7 +20,7 @@ export interface FunctionConstantInputDefinition {
     readonly inputType: BasePrimitiveTypeDefinition
 }
 
-export interface InputBindingsHash {
+export interface BindingsHash {
     readonly [inputs: string]:  BindingPath
 }
 export interface InputConstantsHash {
@@ -33,14 +33,16 @@ interface InputValuesHash {
 
 export interface WorkflowStepInstanceDefinition {
     readonly functionDefId: string
-    readonly inputBindings: InputBindingsHash
+    readonly inputBindings: BindingsHash
     readonly inputConstants: InputConstantsHash
+    readonly outputBinding: BindingPath
     readonly replaceContext: boolean
     readonly doWhenOutputPathExists: 'replace' | 'append'
 }
 export interface WorkflowStepInstanceDefinitionRendition {
     readonly functionDefId: string
-    readonly inputBindings: InputBindingsHash
+    readonly inputBindings: BindingsHash
+    readonly outputBinding: BindingPath
     readonly inputConstants?: InputConstantsHash
     readonly replaceContext?: boolean
     readonly doWhenOutputPathExists?: 'replace' | 'append'
@@ -52,6 +54,7 @@ export function applyDefinitionDefaults(rend: WorkflowStepInstanceDefinitionRend
         functionDefId: rend.functionDefId,
         inputConstants: rend.inputConstants ? rend.inputConstants : {},
         inputBindings: rend.inputBindings,
+        outputBinding: rend.outputBinding,
         replaceContext: rend.replaceContext ? rend.replaceContext : false,
         doWhenOutputPathExists: rend.doWhenOutputPathExists ? rend.doWhenOutputPathExists : 'replace' 
      }
@@ -93,13 +96,9 @@ export class WorkflowFuncDefinition {
                       contextData: {}): ResultForWorkflow {
             let inputValues: InputValuesHash = {            
             }
-            // const inputBindingsKeys = stepInstance.inputBindings.keys
-            // for (var inputBindingsIdx = 0; inputBindingsIdx < inputBindingsKeys.length; inputBindingsIdx++) {
-            //     const inputKey = inputBindingsKeys[inputBindingsIdx] 
             for (let inputKey in stepInstance.inputBindings) {
                 if (stepInstance.inputBindings.hasOwnProperty(inputKey)) {
-                    console.log('stepInstanceApply ' + inputKey + ' in ' + stepInstance.functionDefId)
-                    // const inputKey = inputBindingsKeys[inputBindingsIdx]
+                    // console.log('stepInstanceApply ' + inputKey + ' in ' + stepInstance.functionDefId)
                     const pathToValue = stepInstance.inputBindings[inputKey]
                     const typeExpected = this.inputDefinitions[this.inputNamesToIdx[inputKey]].inputType
                     if (typeExpected.kind === TypeDefinitionKind.CustomPrimitiveTypeDefinitionName) {
@@ -123,6 +122,9 @@ export class WorkflowFuncDefinition {
     
 }
 
+export interface FuncDefinitionHash {
+    readonly [inputs: string]:  WorkflowFuncDefinition
+}
 // custom type definition (not the runtime data)
 export const PastDateType: CustomPrimitiveTypeDefinition = { 
     kind: TypeDefinitionKind.CustomPrimitiveTypeDefinitionName,
