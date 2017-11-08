@@ -1,11 +1,10 @@
-import { AccumulateContextType, RunWorkflow, RunWorkflowInTestMode} from '../workflowRuntime';
-import { ExecDbStep } from '../execDbStep';
-import { setValueInBindingPath, validateBindingPath, validateBindingPathWithType } from '../bindingPathHelpers';
-import { BaseBoolean, BindingPath, CustomHashTypeDefinition, getDateValue, TypeDefinitionKind } from '../types';
-import {ResultForWorkflow, applyDefinitionDefaults,  FuncDefinitionHash,  PastDateType} from '../workflowStep'
-import { GOOD, PropertyError } from '../../../../udf-collector-ui/src/commons/rop/rop'
-import {DateMustBeLess, DateMustBeLessStep} from '../dateMustBeLessStep';
-import {contextType} from './helpers/testHelpers'
+import { AccumulateContextType, RunWorkflow, RunWorkflowInTestMode } from '../workflowRuntime';
+import { ExecDbStep } from '../execDbStep'
+import { BaseBoolean, BindingPath, CustomHashTypeDefinition, TypeDefinitionKind } from '../types'
+import { applyDefinitionDefaults,  FuncDefinitionHash,  PastDateType } from '../workflowStep'
+import { GOOD } from '../../../../udf-collector-ui/src/commons/rop/rop'
+import { DateMustBeLessStep } from '../dateMustBeLessStep'
+import { contextType } from './helpers/testHelpers'
 
 describe('Workflow Flow', () => {
       
@@ -56,6 +55,14 @@ describe('Workflow Flow', () => {
         const lastResult = RunWorkflow(globalFuncDefs, instances, contextType, contextData )
         // assert
         expect(lastResult).toEqual({ kind: GOOD, payload:  true }) 
+      })
+      it('runs the steps in test mode', () => {
+        // arrange
+
+        // act
+        const lastResult = RunWorkflowInTestMode(globalFuncDefs, instances, contextType, contextData )
+        // assert
+        expect(lastResult).toEqual({ kind: GOOD, payload:  false }) 
       })
       it('accumulate types as the workflow progresses', () => {
         // arrange

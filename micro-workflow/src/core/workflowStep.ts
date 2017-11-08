@@ -135,10 +135,20 @@ export class WorkflowFuncDefinition {
 export interface FuncDefinitionHash {
     readonly [inputs: string]:  WorkflowFuncDefinition
 }
-// custom type definition (not the runtime data)
+// custom type definitions for helping doing code (not the runtime data, but it could come from regular json)
 export const PastDateType: CustomPrimitiveTypeDefinition = { 
     kind: TypeDefinitionKind.CustomPrimitiveTypeDefinitionName,
     name: 'PastDate', 
     basePrimitiveType: 'Date'
-  }
+}
+export const ShortAnswer: CustomPrimitiveTypeDefinition = { 
+    kind: TypeDefinitionKind.CustomPrimitiveTypeDefinitionName,
+    name: 'ShortAnswer', 
+    basePrimitiveType: 'string'
+}
+export const PositiveMoney: CustomPrimitiveTypeDefinition = { 
+    kind: TypeDefinitionKind.CustomPrimitiveTypeDefinitionName,
+    name: 'PositiveMoney', 
+    basePrimitiveType: 'number'
+}
   

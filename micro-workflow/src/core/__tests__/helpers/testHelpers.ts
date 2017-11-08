@@ -1,5 +1,5 @@
-import { BaseBoolean, CustomHashTypeDefinition, TypeDefinitionKind } from '../../types'
-import {PastDateType} from '../../workflowStep'
+import { CustomHashTypeDefinition, TypeDefinitionKind } from '../../types'
+import { PastDateType } from '../../workflowStep'
 
 export const blogEntryType: CustomHashTypeDefinition = {
     kind: TypeDefinitionKind.CustomHashTypeDefinition,
@@ -11,7 +11,7 @@ export const blogEntryType: CustomHashTypeDefinition = {
     }
 }
 export const contextType: CustomHashTypeDefinition = {
-    //notice the root always wrap custom ones
+    // notice the root always wrap custom ones
     kind: TypeDefinitionKind.CustomHashTypeDefinition,
     name: 'root',
     properties:  {

@@ -38,7 +38,7 @@ export interface BaseCollectionTypeDefinition {
 
 export interface CustomPrimitiveTypeDefinition {
     readonly kind: TypeDefinitionKind.CustomPrimitiveTypeDefinitionName
-    readonly name:string
+    readonly name: string
     readonly basePrimitiveType: BasePrimitiveType
 }
 
@@ -65,36 +65,34 @@ export type TypeDefinition =
     | BaseCollectionTypeDefinition
 
 export function getDateValue(bindingPath: BindingPath, 
-    currDataContext:{} ) {
-        let currPointer = currDataContext;
+                             currDataContext: {} ) {
+        let currPointer = currDataContext
         for (var pathStep = 0; pathStep < bindingPath.length; pathStep++) {
-            currPointer = currPointer[bindingPath[pathStep]];
+            currPointer = currPointer[bindingPath[pathStep]]
         }
-        return <Date>currPointer;
+        return <Date> currPointer
     }
 export function getNumericValue(bindingPath: BindingPath, 
-    currDataContext:{} ) {
-        let currPointer = currDataContext;
+                                currDataContext: {} ) {
+        let currPointer = currDataContext
         for (var pathStep = 0; pathStep < bindingPath.length; pathStep++) {
-            currPointer = currPointer[bindingPath[pathStep]];
+            currPointer = currPointer[bindingPath[pathStep]]
         }
-        return <number>currPointer;
+        return <number> currPointer
     }
 export function getStringValue(bindingPath: BindingPath, 
-    currDataContext:{} ) {
-        let currPointer = currDataContext;
+                               currDataContext: {} ) {
+        let currPointer = currDataContext
         for (var pathStep = 0; pathStep < bindingPath.length; pathStep++) {
-            currPointer = currPointer[bindingPath[pathStep]];
+            currPointer = currPointer[bindingPath[pathStep]]
         }
-        return <string>currPointer;
+        return <string> currPointer
     }
-
 
 export interface TypeDefinitionId {
     readonly kind: TypeDefinitionKind
     readonly customTypeName: string
 }
-
 
 /*
 a function needs a wrapper defintion that provides the inputs required
