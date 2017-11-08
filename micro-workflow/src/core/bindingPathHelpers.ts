@@ -65,6 +65,9 @@ export function setValueInBindingPath(contextType: CustomHashTypeDefinition,
     let currPathIdx = 0
     while (currPathIdx < bindingPath.length - 1) {
         contextPointer = contextPointer[bindingPath[currPathIdx]]
+        if (contextPointer === undefined) {
+            contextPointer = contextPointer[bindingPath[currPathIdx]] = {}
+        }
         currPathIdx++
     }
       

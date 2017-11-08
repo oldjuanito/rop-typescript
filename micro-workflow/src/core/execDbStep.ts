@@ -1,4 +1,4 @@
-import {CustomHashTypeDefinition} from './types';
+import {BaseBoolean, CustomHashTypeDefinition} from './types';
 import {GOOD, pass, fail} from "../../../udf-collector-ui/src/commons/rop/rop";
 import {FunctionInputDefinition, PastDateType, InputConstantsHash, WorkflowFuncDefinition, InputValuesHash} from './workflowStep'
 
@@ -21,7 +21,7 @@ export const ExecDbStep = new WorkflowFuncDefinition(
     [
         // generate the input based on the constants???
     ],
-    {kind: 'Date'}, 
+    BaseBoolean, 
     function (inputs: InputValuesHash, inputConstants: InputConstantsHash, 
               inputDefinitionsUsed: FunctionInputDefinition[]) {
         const ropResult = execSql(inputs, inputConstants, inputDefinitionsUsed) //

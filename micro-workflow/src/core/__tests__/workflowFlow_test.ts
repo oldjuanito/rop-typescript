@@ -1,12 +1,11 @@
-import { RunWorkflow, RunWorkflowInTestMode } from '../workflowRuntime';
+import { AccumulateContextType, RunWorkflow, RunWorkflowInTestMode} from '../workflowRuntime';
 import { ExecDbStep } from '../execDbStep';
 import { setValueInBindingPath, validateBindingPath, validateBindingPathWithType } from '../bindingPathHelpers';
 import { BaseBoolean, BindingPath, CustomHashTypeDefinition, getDateValue, TypeDefinitionKind } from '../types';
 import {ResultForWorkflow, applyDefinitionDefaults,  FuncDefinitionHash,  PastDateType} from '../workflowStep'
 import { GOOD, PropertyError } from '../../../../udf-collector-ui/src/commons/rop/rop'
-import {DateMustBeLess, DateMustBeLessStep} from "../dateMustBeLessStep";
+import {DateMustBeLess, DateMustBeLessStep} from '../dateMustBeLessStep';
 import {contextType} from './helpers/testHelpers'
-
 
 describe('Workflow Flow', () => {
       
@@ -16,7 +15,7 @@ describe('Workflow Flow', () => {
         'blogEntry' : {
           'DateCreated' : myDate,
           'DateModified' : myDate,
-          'WasSaved': false
+          // 'WasSaved': false
         } 
       }
       // use the type descriptor to capture the values from the data?
@@ -53,17 +52,27 @@ describe('Workflow Flow', () => {
       it('runs the steps', () => {
         // arrange
 
-        // act 
+        // act
         const lastResult = RunWorkflow(globalFuncDefs, instances, contextType, contextData )
         // assert
         expect(lastResult).toEqual({ kind: GOOD, payload:  true }) 
       })
-      it('runs the steps in Test mode', () => {
+      it('accumulate types as the workflow progresses', () => {
         // arrange
 
         // act 
-        const lastResult = RunWorkflowInTestMode(globalFuncDefs, instances, contextType, contextData )
+        const lastContextType = AccumulateContextType(globalFuncDefs, instances, contextType, contextData )
         // assert
-        expect(lastResult).toEqual({ kind: GOOD, payload:  false }) 
+        const expectedType: CustomHashTypeDefinition = {
+            kind: TypeDefinitionKind.CustomHashTypeDefinition,
+            name: 'BlogEntry', 
+            properties:  {
+                'DateCreated' : PastDateType,
+                'DateModified' : PastDateType,
+                'WasSaved' : BaseBoolean
+            }
+        }
+        expect(lastContextType.properties['blogEntry']).toEqual(expectedType)
       })
+
   })

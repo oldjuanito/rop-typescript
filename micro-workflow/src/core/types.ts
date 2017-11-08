@@ -43,14 +43,20 @@ export interface CustomPrimitiveTypeDefinition {
 }
 
 interface PropertiesHash {
-    readonly [properties:string]:  TypeDefinition
+    [properties: string]:  TypeDefinition
 }
 export interface CustomHashTypeDefinition {
     readonly kind: TypeDefinitionKind.CustomHashTypeDefinition
-    readonly name:string,
+    readonly name: string,
     readonly properties:  PropertiesHash
 }
 
+export const anonymousType: CustomHashTypeDefinition = {
+    kind: TypeDefinitionKind.CustomHashTypeDefinition,
+    name: 'anonymous',
+    properties:  {
+    }
+}
 export type BindingPath = string[]
 export type TypeDefinition =  
     CustomHashTypeDefinition 

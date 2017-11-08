@@ -7,7 +7,7 @@ import {
 } from '../types';
 import {
     applyDefinitionDefaults,
-    PastDateType
+    PastDateType, WorkflowStepInstanceDefinitionRendition
 } from '../workflowStep';
 import { GOOD } from '../../../../udf-collector-ui/src/commons/rop/rop';
 import { DateMustBeLess, DateMustBeLessStep } from "../dateMustBeLessStep";
@@ -61,7 +61,7 @@ describe('WorkflowStep', () => {
       expect(isValid).toEqual(true)   
     })
     
-    it('applies context assinged values to step inputs', () => {
+    it('applies context assigned values to step inputs', () => {
       // arrange
 
       // the data that would appear at runtime
@@ -89,13 +89,13 @@ describe('WorkflowStep', () => {
       //    doWhenOutputPathExists: 'replace' 
       // }
       const stepInstance = applyDefinitionDefaults(
-        {
-          functionDefId: 'DateMustBeLessStep',
-          inputBindings: {
-           'date1': pathToDate1,
-           'date2': pathToDate2
+          <WorkflowStepInstanceDefinitionRendition>{
+              functionDefId: 'DateMustBeLessStep',
+              inputBindings: {
+                  'date1': pathToDate1,
+                  'date2': pathToDate2
+              }
           }
-        }
       );
       const globalFuncDefs = {'DateMustBeLessStep': DateMustBeLessStep}
       // act

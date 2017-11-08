@@ -7,7 +7,7 @@ export const blogEntryType: CustomHashTypeDefinition = {
     properties:  {
         'DateCreated' : PastDateType,
         'DateModified' : PastDateType,
-        'WasSaved' : BaseBoolean
+        // 'WasSaved' : BaseBoolean
     }
 }
 export const contextType: CustomHashTypeDefinition = {
