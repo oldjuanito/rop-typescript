@@ -4,45 +4,10 @@ import { BaseBoolean, BaseString, BindingPath, CustomHashTypeDefinition, TypeDef
 import { applyDefinitionDefaults, FuncDefinitionHash, PastDateType, PositiveMoney, ShortAnswer } from '../workflowStep';
 import { GOOD } from '../../../../udf-collector-ui/src/commons/rop/rop'
 import { DateMustBeLessStep } from '../dateMustBeLessStep'
-import { contextType } from './helpers/testHelpers'
+import {  globalFuncDefs, MsgType, myForm } from './helpers/testHelpers'
 
 describe('Workflow for udf', () => {
-      // this might be created at runtime from the list of udfs given by
-      //   user:
-      const myFormFields: CustomHashTypeDefinition = {
-        kind: TypeDefinitionKind.CustomHashTypeDefinition,
-        name: 'myFormFields',
-        properties:  {
-            'Name1' : ShortAnswer,
-            'DateModified' : PastDateType,
-            'ToPay' : PositiveMoney,
-        }
-      }
-      const myFormLabels: CustomHashTypeDefinition = {
-        kind: TypeDefinitionKind.CustomHashTypeDefinition,
-        name: 'myFormLabels',
-        properties:  {
-            'Name1' : BaseString,
-            'DateModified' : BaseString,
-            'ToPay' : BaseString,
-        }
-      }
-      const myForm: CustomHashTypeDefinition = {
-        kind: TypeDefinitionKind.CustomHashTypeDefinition,
-        name: 'FormWithUdfs',
-        properties:  {
-            'FieldValues' : myFormFields,
-            'FieldNames' : myFormLabels
-        }
-      }
-      const MsgType: CustomHashTypeDefinition = {
-        kind: TypeDefinitionKind.CustomHashTypeDefinition,
-        name: 'MsgType',
-        properties:  {
-            'NewValue' : BaseString,
-            'FieldName' : BaseString
-        }
-      }
+      
       const contextType: CustomHashTypeDefinition = {
         // notice the root always wrap custom ones
         kind: TypeDefinitionKind.CustomHashTypeDefinition,
@@ -81,10 +46,21 @@ describe('Workflow for udf', () => {
         {
           functionDefId: 'UpdateFormFromTextMsg',
           inputBindings: {
-           'date1': pathToDate1,
-           'date2': pathToDate2
+            // msg field name and value
+            // graph root to update
+           'msg': pathToCurrMsg,
+           'currValues': pathToFormVals
           },
           outputBinding: []
         }
       )
+      const instances = [stepInstance]
+      it('updates model based on new value', () => {
+        // arrange
+
+        // act
+        const lastResult = RunWorkflow(globalFuncDefs, instances, contextType, contextData )
+        // assert
+        expect(lastResult).toEqual({ kind: GOOD, payload:  true }) 
+      })
   })

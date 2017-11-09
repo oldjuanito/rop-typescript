@@ -76,7 +76,7 @@ export class WorkflowFuncDefinition {
     constructor(
               readonly inputConstantsDefinitions: FunctionConstantInputDefinition[]
             , public inputDefinitions: FunctionInputDefinition[]
-            , readonly outputType: TypeDefinition 
+            , public outputType: TypeDefinition 
                 // this is only for design support, at runtime we just return a hash, array or primtive
             , readonly applyFunc: ApplierFunc
             , readonly constantsApplyFunc: ConstInputApplierFunc = emptyFunc
@@ -134,21 +134,5 @@ export class WorkflowFuncDefinition {
 
 export interface FuncDefinitionHash {
     readonly [inputs: string]:  WorkflowFuncDefinition
-}
-// custom type definitions for helping doing code (not the runtime data, but it could come from regular json)
-export const PastDateType: CustomPrimitiveTypeDefinition = { 
-    kind: TypeDefinitionKind.CustomPrimitiveTypeDefinitionName,
-    name: 'PastDate', 
-    basePrimitiveType: 'Date'
-}
-export const ShortAnswer: CustomPrimitiveTypeDefinition = { 
-    kind: TypeDefinitionKind.CustomPrimitiveTypeDefinitionName,
-    name: 'ShortAnswer', 
-    basePrimitiveType: 'string'
-}
-export const PositiveMoney: CustomPrimitiveTypeDefinition = { 
-    kind: TypeDefinitionKind.CustomPrimitiveTypeDefinitionName,
-    name: 'PositiveMoney', 
-    basePrimitiveType: 'number'
 }
   

@@ -42,7 +42,7 @@ export interface CustomPrimitiveTypeDefinition {
     readonly basePrimitiveType: BasePrimitiveType
 }
 
-interface PropertiesHash {
+export interface PropertiesHash {
     [properties: string]:  TypeDefinition
 }
 export interface CustomHashTypeDefinition {
@@ -102,3 +102,19 @@ an instance defines a step placed int he workflow and its input/output mapping
 
 workflow engine checks the validity of the binding path and its leaf type being compat with the input
 */
+// custom type definitions for helping doing code (not the runtime data, but it could come from regular json)
+export const PastDateType: CustomPrimitiveTypeDefinition = {
+    kind: TypeDefinitionKind.CustomPrimitiveTypeDefinitionName,
+    name: 'PastDate',
+    basePrimitiveType: 'Date'
+}
+export const ShortAnswer: CustomPrimitiveTypeDefinition = {
+    kind: TypeDefinitionKind.CustomPrimitiveTypeDefinitionName,
+    name: 'ShortAnswer',
+    basePrimitiveType: 'string'
+}
+export const PositiveMoney: CustomPrimitiveTypeDefinition = {
+    kind: TypeDefinitionKind.CustomPrimitiveTypeDefinitionName,
+    name: 'PositiveMoney',
+    basePrimitiveType: 'number'
+}

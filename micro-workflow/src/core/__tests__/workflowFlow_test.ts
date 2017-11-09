@@ -1,10 +1,10 @@
 import { AccumulateContextType, RunWorkflow, RunWorkflowInTestMode } from '../workflowRuntime';
 import { ExecDbStep } from '../execDbStep'
-import { BaseBoolean, BindingPath, CustomHashTypeDefinition, TypeDefinitionKind } from '../types'
-import { applyDefinitionDefaults,  FuncDefinitionHash,  PastDateType } from '../workflowStep'
+import { BaseBoolean, BindingPath, CustomHashTypeDefinition, PastDateType, TypeDefinitionKind } from '../types';
+import { applyDefinitionDefaults,  FuncDefinitionHash } from '../workflowStep'
 import { GOOD } from '../../../../udf-collector-ui/src/commons/rop/rop'
 import { DateMustBeLessStep } from '../dateMustBeLessStep'
-import { contextType } from './helpers/testHelpers'
+import { contextType, globalFuncDefs } from './helpers/testHelpers';
 
 describe('Workflow Flow', () => {
       
@@ -45,7 +45,6 @@ describe('Workflow Flow', () => {
           } 
         }
       )
-      const globalFuncDefs: FuncDefinitionHash = {'DateMustBeLessStep': DateMustBeLessStep, 'ExecDbStep': ExecDbStep}
       const instances = [stepInstance, stepInstance2]
 
       it('runs the steps', () => {
@@ -79,7 +78,7 @@ describe('Workflow Flow', () => {
                 'WasSaved' : BaseBoolean
             }
         }
-        expect(lastContextType.properties['blogEntry']).toEqual(expectedType)
+        expect(lastContextType.properties.blogEntry).toEqual(expectedType)
       })
 
   })
