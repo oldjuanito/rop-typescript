@@ -9,6 +9,7 @@ import {
     PositiveMoney,
     PropertiesHash,
     ShortAnswer,
+    TypeDefinitionHash,
     TypeDefinitionKind,
 } from '../../types';
 import { FuncDefinitionHash} from '../../workflowStep';
@@ -75,7 +76,7 @@ export const globalFuncDefs: FuncDefinitionHash = {
     'DateMustBeLessStep': DateMustBeLessStep,
     'ExecDbStep': ExecDbStep
 }
-export const globalCustomTypeDefs: PropertiesHash = {
+export const globalCustomTypeDefs: TypeDefinitionHash = {
     'PastDateType': PastDateType,
     'ShortAnswer': ShortAnswer,
     'PositiveMoney': PositiveMoney,

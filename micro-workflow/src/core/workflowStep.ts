@@ -4,11 +4,13 @@ import {
     CustomPrimitiveTypeDefinition,
     getDateValue,
     getNumericValue,
+    getObjectValue,
     getStringValue,
     RuntimeBasePrimitiveType,
     TypeDefinition,
-    TypeDefinitionKind
-} from './types'
+    TypeDefinitionHash,
+    TypeDefinitionKind,
+} from './types';
 import { PropertyError, RopResult } from '../../../udf-collector-ui/src/commons/rop/rop'
 
 export interface FunctionInputDefinition {
@@ -28,7 +30,7 @@ export interface InputConstantsHash {
 }
 
 interface InputValuesHash {
-    [inputs: string]:  RuntimeBasePrimitiveType
+    [inputs: string]:  RuntimeBasePrimitiveType | {}
 }
 
 export interface WorkflowStepInstanceDefinition {
@@ -65,9 +67,12 @@ export type ResultForWorkflow = RopResult<HashResultForWorkflow, PropertyError[]
 export type AsyncResultForWorkflow = Promise<RopResult<HashResultForWorkflow, PropertyError[]>>
  
 type ApplierFunc = (inputs: InputValuesHash, constInputs: InputConstantsHash, 
-                    inputDefinitionsUsed: FunctionInputDefinition[] ) => ResultForWorkflow 
+                    inputDefinitionsUsed: FunctionInputDefinition[]
+                ,   globalTypeDefinitions: TypeDefinitionHash  ) => ResultForWorkflow 
                     // we can trust that the runtime engine has provided all the inputs defined
-type ConstInputApplierFunc = (inputs: InputConstantsHash, defintion: WorkflowFuncDefinition) => void
+type ConstInputApplierFunc = (inputs: InputConstantsHash, 
+                              defintion: WorkflowFuncDefinition
+,                             globalTypeDefinitions: TypeDefinitionHash) => void
 
 const emptyFunc = (_: {}) => { return }
 export class WorkflowFuncDefinition {
@@ -88,45 +93,58 @@ export class WorkflowFuncDefinition {
             this.inputNamesToIdx[inputDefinitions[inputIdx].name] = inputIdx
         }
     }
-    applyConstantBindings(stepInstance: WorkflowStepInstanceDefinition) {
+    applyConstantBindings(stepInstance: WorkflowStepInstanceDefinition
+        ,                 globalTypeDefinitions: TypeDefinitionHash) {
         // allows generating input definitions dynamically
-        this.constantsApplyFunc(stepInstance.inputConstants, this)
+        this.constantsApplyFunc(stepInstance.inputConstants, this, globalTypeDefinitions)
         
     }
     stepInstanceApplyTest(stepInstance: WorkflowStepInstanceDefinition, 
-                          contextData: {}): ResultForWorkflow {
-        return this.doFuncApply(stepInstance, contextData, this.applyFuncForTest || this.applyFunc)
+                          contextData: {},
+                          globalTypeDefinitions: TypeDefinitionHash): ResultForWorkflow {
+        return this.doFuncApply(stepInstance, contextData, 
+                                this.applyFuncForTest || this.applyFunc, globalTypeDefinitions)
     }
     stepInstanceApply(stepInstance: WorkflowStepInstanceDefinition, 
-                      contextData: {}): ResultForWorkflow {
-        return this.doFuncApply(stepInstance, contextData, this.applyFunc)
+                      contextData: {},
+                      globalTypeDefinitions: TypeDefinitionHash ): ResultForWorkflow {
+        return this.doFuncApply(stepInstance, contextData, this.applyFunc, globalTypeDefinitions)
     }
     private doFuncApply(stepInstance: WorkflowStepInstanceDefinition, 
                         contextData: {},
-                        funcToUse: ApplierFunc): ResultForWorkflow {
+                        funcToUse: ApplierFunc,
+                        globalTypeDefinitions: TypeDefinitionHash): ResultForWorkflow {
         let inputValues: InputValuesHash = {            
         }
         for (let inputKey in stepInstance.inputBindings) {
-        if (stepInstance.inputBindings.hasOwnProperty(inputKey)) {
-            // console.log('stepInstanceApply ' + inputKey + ' in ' + stepInstance.functionDefId)
-            const pathToValue = stepInstance.inputBindings[inputKey]
-            const typeExpected = this.inputDefinitions[this.inputNamesToIdx[inputKey]].inputType
-            if (typeExpected.kind === TypeDefinitionKind.CustomPrimitiveTypeDefinitionName) {
-                switch (typeExpected.basePrimitiveType) {
-                    case 'number':
-                        inputValues[inputKey]  = getNumericValue(pathToValue, contextData)
+            if (stepInstance.inputBindings.hasOwnProperty(inputKey)) {
+                // console.log('stepInstanceApply ' + inputKey + ' in ' + stepInstance.functionDefId)
+                const pathToValue = stepInstance.inputBindings[inputKey]
+                const typeExpected = this.inputDefinitions[this.inputNamesToIdx[inputKey]].inputType
+                switch (typeExpected.kind) {
+                    case  (TypeDefinitionKind.CustomPrimitiveTypeDefinitionName) : 
+                        switch (typeExpected.basePrimitiveType) {
+                            case 'number':
+                                inputValues[inputKey]  = getNumericValue(pathToValue, contextData)
+                                break
+                            case 'Date':
+                                inputValues[inputKey]  = getDateValue(pathToValue, contextData)
+                                break
+                            default: // treat as string
+                                inputValues[inputKey]  = getStringValue(pathToValue, contextData)
+                                break
+                        }
                         break
-                    case 'Date':
-                        inputValues[inputKey]  = getDateValue(pathToValue, contextData)
+                    case  (TypeDefinitionKind.CustomHashTypeDefinition) : 
+                        inputValues[inputKey] = getObjectValue(pathToValue, contextData) 
                         break
-                    default: // treat as string
-                        inputValues[inputKey]  = getStringValue(pathToValue, contextData)
+                    default:
                         break
                 }
             }
         }
-        }
-        const result = funcToUse(inputValues, stepInstance.inputConstants, this.inputDefinitions)
+        const result = funcToUse(inputValues, stepInstance.inputConstants, this.inputDefinitions
+        ,                        globalTypeDefinitions)
         return result
     }
     

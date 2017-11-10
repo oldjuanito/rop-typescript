@@ -45,6 +45,10 @@ export interface CustomPrimitiveTypeDefinition {
 export interface PropertiesHash {
     [properties: string]:  TypeDefinition
 }
+
+export interface TypeDefinitionHash {
+    [properties: string]:  TypeDefinition
+}
 export interface CustomHashTypeDefinition {
     readonly kind: TypeDefinitionKind.CustomHashTypeDefinition
     readonly name: string,
@@ -89,6 +93,14 @@ export function getStringValue(bindingPath: BindingPath,
         return <string> currPointer
     }
 
+export function getObjectValue(bindingPath: BindingPath, 
+                               currDataContext: {} ) {
+    let currPointer = currDataContext
+    for (var pathStep = 0; pathStep < bindingPath.length; pathStep++) {
+    currPointer = currPointer[bindingPath[pathStep]]
+    }
+    return <{}> currPointer
+}
 export interface TypeDefinitionId {
     readonly kind: TypeDefinitionKind
     readonly customTypeName: string
