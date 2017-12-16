@@ -1,0 +1,30 @@
+{
+  "name": "sample-shared",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/jest": "^21.1.4",
+    "jest": "^21.2.1",
+    "ts-jest": "^21.2.4",
+    "typescript": "^2.6.2"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testMatch": [
+      "**/__tests__/*.(ts|tsx|js)"
+    ]
+  },
+  "author": "",
+  "license": "ISC"
+}
