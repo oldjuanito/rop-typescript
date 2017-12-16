@@ -80,6 +80,21 @@ export class RopBind<A, ErrType> {
 
 export function startTrack<A, ErrType>(firstResult: RopResult<A, ErrType>) {
     return new RopBind(firstResult)
+    // return {
+    //     then: function (nextFunc: (rendition: A) => RopResult<T, ErrType>) {
+    //         switch (firstResult.kind) {
+    //             case GOOD :
+    //                 const secondRes = nextFunc(firstResult.payload);
+    //                 return secondRes;
+    //             case BAD :
+    //                 return (firstResult);
+    //             default:
+    //                 return failWithDesc('system error, default case');
+
+    //         }
+            
+    //     }
+    // };
 }
 export function runValidateIf<A, ErrType>(evaluate: boolean, evalFunc: (input: A) => RopResult<A, ErrType>, input: A) {
     if (evaluate) {

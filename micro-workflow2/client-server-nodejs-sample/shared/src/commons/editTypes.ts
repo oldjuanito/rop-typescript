@@ -22,3 +22,11 @@ export type EditProp<C> = {
     readonly currRendition: string,
     goodVal?: C
 }
+
+export type RenditionToDomainConverter<Rendition, Domain> =
+    (propName: string, context: Rendition) => ResultForWorkflow<Domain>
+
+
+export interface RenditionToDomainConverterHash {
+    [propName: string]: RenditionToDomainConverter<{}, {}>
+}

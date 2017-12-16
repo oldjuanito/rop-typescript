@@ -1,7 +1,28 @@
 import { ResultForWorkflow } from './editTypes'
 import { fail, GOOD, pass, PropertyError } from './rop/rop'
-import { AsyncMiddleWareFunc, isAsyncResult, StepTransitionFunc, SyncWorkflowStep, WorkflowStep } from './workflowStep'
+import {
+    AsyncMiddleWareFunc, isAsyncResult, StepTransitionFunc, SyncStepFunc, SyncWorkflowStep,
+    WorkflowStep
+} from './workflowStep'
 
+// export function RunWorkflow<C>(instances: WorkflowStep<C>[], contextData: C, middleWare: MiddleWareFunc<C>[] = []): ResultForWorkflow<C> {
+//     let lastResult: ResultForWorkflow<C> = pass(contextData)
+//     let currErrors: PropertyError[] = []
+//     let currContextData: C = contextData
+//     for (let stepIdx = 0; stepIdx < instances.length && currErrors.length === 0; stepIdx++) {
+//         const currStepInstance = instances[stepIdx]
+//         lastResult = currStepInstance.stepInstanceApply(currContextData, middleWare)
+//         switch (lastResult.kind) {
+//             case GOOD:
+//                 currContextData = lastResult.payload
+//                 break
+//             default:
+//                 currErrors = lastResult.error
+//                 break
+//         }
+//     }
+//     return lastResult
+// }
 
 function runMiddleware<C>(middleWare: AsyncMiddleWareFunc<C>[], step: StepTransitionFunc<C>, currContextData: C,
                        lastResult: ResultForWorkflow<C>) {
@@ -135,4 +156,29 @@ ResultForWorkflow<C> {
         }
     }
     return lastResult
+}
+
+export interface SyncWorkflowDefinition<C> {
+    steps: SyncWorkflowStep<C>[],
+    preMiddleWare: AsyncMiddleWareFunc<C>[],
+    postMiddleWare: AsyncMiddleWareFunc<C>[]
+}
+
+export function RunSyncWorkflowStep<C, SubWorkflowContext>(
+    workflowDefinition: SyncWorkflowDefinition<SubWorkflowContext>,
+    contextMapper: (context:C) => SubWorkflowContext,
+    successMapper: (context:C, succesRes: SubWorkflowContext) => C,
+    failureMapper: (context:C, errs: PropertyError[]) => C)
+: SyncStepFunc<C>{
+    return (inputContext: C) => {
+        const workflowRes = runWorkflow2(workflowDefinition.steps,
+            contextMapper(inputContext),
+            workflowDefinition.preMiddleWare,
+            workflowDefinition.postMiddleWare
+        )
+        const newParentContext = workflowRes.kind === GOOD ?
+            successMapper(inputContext, workflowRes.payload)
+            : failureMapper(inputContext, workflowRes.error)
+        return pass(newParentContext)
+    }
 }

@@ -1,28 +1,29 @@
-import { EditProp } from '../editTypes'
+import { ResultForWorkflow } from '../editTypes'
+import { fail, pass } from '../rop/rop'
 
-type ShortNameProp = EditProp< string >
+export type ShortNameRendition = string
+export type ShortName = string
 const MAX_CHARS = 40
 export const shortNamePropCreateStep =
-    (propName: string, context: ShortNameProp): ShortNameProp => {
-        
-        const rawVal = context.currRendition
+    (propName: string, rendition: ShortNameRendition): ResultForWorkflow<ShortName> => {
+        const rawVal = rendition
         if (rawVal === null || rawVal === '') {
-            return {...context, errors: [
-                { propName, errorDescription: `Must not be blank` } ]
-            }
+            return fail([
+                {propName, errorDescription: `Must not be blank`}]
+            )
         }
         if (rawVal.length > MAX_CHARS) {
-            return {...context, errors: [
-                    {propName, errorDescription: `Must not exceed ${MAX_CHARS} characters`}]
-            }
+            return fail([
+                {propName, errorDescription: `Must not exceed ${MAX_CHARS} characters`}]
+            )
         }
-        return ({...context, goodVal: rawVal})
+        return pass( rawVal)
+    }
 
-    }
-export function createShortNameProp(currRendition: string): ShortNameProp {
-    return { 
-        errors: [], 
-        createFunc: shortNamePropCreateStep,
-        currRendition
-    }
-}
+// export function createShortNameProp(currRendition: string): ShortNameRendition {
+//     return {
+//         errors: [],
+//         createFunc: shortNamePropCreateStep,
+//         currRendition
+//     }
+// }

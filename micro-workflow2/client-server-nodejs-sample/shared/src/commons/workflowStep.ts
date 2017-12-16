@@ -5,6 +5,7 @@ export type AsyncApplierFunc<C> = (context: C) => Promise<ResultForWorkflow<C>>
 
 export type AsyncMiddleWareFunc<C> = (stepInfo: { stepName: string }, context: C, result?: ResultForWorkflow<C>) => void
 
+
 export type StepResult<C> = Promise<ResultForWorkflow<C>> | ResultForWorkflow<C>
 
 export function isAsyncResult<C>(s: StepResult<C>): s is Promise<ResultForWorkflow<C>> {
