@@ -137,7 +137,7 @@ export function mapPromiseResultState<LiteralTypes,
         )
     } else {
         return fail([{
-            errorDescription: `wrong input context, expecting ${typeInput}`,
+            errorDescription: `wrong input context, expecting ${typeInput}, got ${initialState.kind}`,
             propName: 'mapPromiseState'
         }])
     }

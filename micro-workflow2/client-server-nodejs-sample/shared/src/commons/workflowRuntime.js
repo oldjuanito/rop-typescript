@@ -223,3 +223,13 @@ function runWorkflow2(steps, contextData, preMiddleWare, postMiddleWare) {
     return lastResult;
 }
 exports.runWorkflow2 = runWorkflow2;
+function RunSyncWorkflowStep(workflowDefinition, contextMapper, successMapper, failureMapper) {
+    return function (inputContext) {
+        var workflowRes = runWorkflow2(workflowDefinition.steps, contextMapper(inputContext), workflowDefinition.preMiddleWare, workflowDefinition.postMiddleWare);
+        var newParentContext = workflowRes.kind === rop_1.GOOD ?
+            successMapper(inputContext, workflowRes.payload)
+            : failureMapper(inputContext, workflowRes.error);
+        return rop_1.pass(newParentContext);
+    };
+}
+exports.RunSyncWorkflowStep = RunSyncWorkflowStep;

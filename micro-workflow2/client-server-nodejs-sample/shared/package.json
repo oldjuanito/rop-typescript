@@ -26,5 +26,8 @@
     ]
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bignumber.js": "latest"
+  }
 }
