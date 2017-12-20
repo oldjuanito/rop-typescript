@@ -126,6 +126,66 @@ function runAsyncWorkflow(steps, contextData, preMiddleWare, postMiddleWare) {
     });
 }
 exports.runAsyncWorkflow = runAsyncWorkflow;
+function runAsyncWorkflowParallel(steps, contextData, preMiddleWare, postMiddleWare) {
+    if (preMiddleWare === void 0) { preMiddleWare = []; }
+    if (postMiddleWare === void 0) { postMiddleWare = []; }
+    return __awaiter(this, void 0, void 0, function () {
+        var currErrors, currContextData, lastResult, allResultPromises, stepIdx, currStepName, step, stepResult, allResults;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    currErrors = [];
+                    currContextData = contextData;
+                    lastResult = rop_1.pass(currContextData);
+                    allResultPromises = [];
+                    stepIdx = 0;
+                    currStepName = '';
+                    for (; stepIdx < steps.length && currErrors.length === 0; stepIdx++) {
+                        step = steps[stepIdx];
+                        try {
+                            currStepName = step.name;
+                            runMiddleware2(preMiddleWare, step, currContextData, lastResult);
+                            stepResult = step.applyFunc(currContextData);
+                            if (workflowStep_1.isAsyncResult(stepResult)) {
+                                allResultPromises.push(stepResult);
+                            }
+                            // TODO collect all result? then check them one by one?
+                        }
+                        catch (e) {
+                            currErrors.push({
+                                errorDescription: "exception occurred when running workflow (step index: " + stepIdx + ", " + currStepName + "): " + e.message,
+                                propName: 'runAsyncWorkflow'
+                            });
+                            lastResult = rop_1.fail(currErrors);
+                        }
+                    }
+                    return [4 /*yield*/, Promise.all(allResultPromises)];
+                case 1:
+                    allResults = _a.sent();
+                    for (stepIdx = 0; stepIdx < allResults.length; stepIdx++) {
+                        lastResult = allResults[stepIdx];
+                        switch (lastResult.kind) {
+                            case rop_1.GOOD:
+                                currContextData = lastResult.payload;
+                                break;
+                            default:
+                                currErrors = currErrors.concat(lastResult.error);
+                                break;
+                        }
+                    }
+                    return [2 /*return*/, new Promise(function (resolve, reject) {
+                            if (currErrors.length === 0) {
+                                resolve(lastResult);
+                            }
+                            else {
+                                resolve(rop_1.fail(currErrors));
+                            }
+                        })];
+            }
+        });
+    });
+}
+exports.runAsyncWorkflowParallel = runAsyncWorkflowParallel;
 function runAsyncWorkflow2(steps, contextData, preMiddleWare, postMiddleWare) {
     if (preMiddleWare === void 0) { preMiddleWare = []; }
     if (postMiddleWare === void 0) { postMiddleWare = []; }
@@ -223,7 +283,7 @@ function runWorkflow2(steps, contextData, preMiddleWare, postMiddleWare) {
     return lastResult;
 }
 exports.runWorkflow2 = runWorkflow2;
-function RunSyncWorkflowStep(workflowDefinition, contextMapper, successMapper, failureMapper) {
+function runSyncWorkflowStep(workflowDefinition, contextMapper, successMapper, failureMapper) {
     return function (inputContext) {
         var workflowRes = runWorkflow2(workflowDefinition.steps, contextMapper(inputContext), workflowDefinition.preMiddleWare, workflowDefinition.postMiddleWare);
         var newParentContext = workflowRes.kind === rop_1.GOOD ?
@@ -232,4 +292,63 @@ function RunSyncWorkflowStep(workflowDefinition, contextMapper, successMapper, f
         return rop_1.pass(newParentContext);
     };
 }
-exports.RunSyncWorkflowStep = RunSyncWorkflowStep;
+exports.runSyncWorkflowStep = runSyncWorkflowStep;
+function runAsyncWorkflowStep(stepName, workflowDefinition, contextMapper, successMapper) {
+    var applyFunc = function (inputContext) {
+        var workflowResPromise = runAsyncWorkflow2(workflowDefinition.steps, contextMapper(inputContext), workflowDefinition.preMiddleWare, workflowDefinition.postMiddleWare);
+        return workflowResPromise.then(function (workflowRes) {
+            return new Promise(function (resolve, reject) {
+                if (workflowRes.kind === rop_1.GOOD) {
+                    resolve(rop_1.pass(successMapper(inputContext, workflowRes.payload)));
+                }
+                else {
+                    resolve(rop_1.fail(workflowRes.error));
+                }
+            });
+        });
+    };
+    return {
+        name: stepName,
+        applyFunc: applyFunc
+    };
+}
+exports.runAsyncWorkflowStep = runAsyncWorkflowStep;
+// see https://github.com/samartioli/node-play-by-play/blob/master/routes/pet.js for parallel async
+function runAsyncWorkflowParallelStep(stepName, workflowDefinition, contextMapper, successMapper) {
+    var applyFunc = function (inputContext) {
+        var workflowResPromise = runAsyncWorkflowParallel(workflowDefinition.steps, contextMapper(inputContext), workflowDefinition.preMiddleWare, workflowDefinition.postMiddleWare);
+        return workflowResPromise.then(function (workflowRes) {
+            return new Promise(function (resolve, reject) {
+                if (workflowRes.kind === rop_1.GOOD) {
+                    resolve(rop_1.pass(successMapper(inputContext, workflowRes.payload)));
+                }
+                else {
+                    resolve(rop_1.fail(workflowRes.error));
+                }
+            });
+        });
+    };
+    return {
+        name: stepName,
+        applyFunc: applyFunc
+    };
+}
+exports.runAsyncWorkflowParallelStep = runAsyncWorkflowParallelStep;
+function runAsyncWorkflowStep2(stepName, workflowDefinition, contextMapper, successMapper, failureMapper) {
+    var applyFunc = function (inputContext) {
+        var workflowResPromise = runAsyncWorkflow2(workflowDefinition.steps, contextMapper(inputContext), workflowDefinition.preMiddleWare, workflowDefinition.postMiddleWare);
+        return workflowResPromise.then(function (workflowRes) {
+            var newParentContext = workflowRes.kind === rop_1.GOOD ?
+                successMapper(inputContext, workflowRes.payload)
+                : failureMapper(inputContext, workflowRes.error);
+            return new Promise(function (resolve, reject) {
+                resolve(rop_1.pass(newParentContext));
+            });
+        });
+    };
+    return {
+        name: stepName,
+        applyFunc: applyFunc
+    };
+}
+exports.runAsyncWorkflowStep2 = runAsyncWorkflowStep2;

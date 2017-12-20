@@ -33,12 +33,23 @@ export function fail<T>(error: T): Bad<T> {
 //     return { kind: BAD, error: { errorDescription: error } }
 // }
 
+export type RopBindMiddleware<ErrType> = (result: RopResult<any, ErrType>, stepName: string) => void
 export class RopBind<A, ErrType> {
-    constructor(private firstResult: RopResult<A, ErrType>) {
+    static startRop<A, ErrType>(input: A, middleware: RopBindMiddleware<ErrType>[] = []) {
+        return new RopBind(pass(input), middleware)
+    }
+    static async startAsyncRop<A, ErrType>(input: A, middleware: RopBindMiddleware<ErrType>[] = []) {
+        return new RopBind(pass(input), middleware)
+    }
+    constructor(private firstResult: RopResult<A, ErrType>, middleware: RopBindMiddleware<ErrType>[] = []) {
 
     }
     then<T>(nextFunc: (input: A) => RopResult<T, ErrType>) {
         const nextResult = this.thenResult(nextFunc)
+        return new RopBind(nextResult)
+    }
+    async thenAsync<T>(nextFunc: (input: A) => Promise<RopResult<T, ErrType>>) {
+        const nextResult = await this.thenAsyncResult(nextFunc)
         return new RopBind(nextResult)
     }
     map<T>(nextFunc: (input: A) => T) {
@@ -74,6 +85,24 @@ export class RopBind<A, ErrType> {
                 return (firstResult)
 
         }
+    }
+    private thenAsyncResult<T>(nextFunc: (input: A) => Promise<RopResult<T, ErrType>>): Promise<RopResult<T, ErrType>> {
+        return new Promise((resolve, reject) => {
+            const firstResult = this.firstResult
+            switch (firstResult.kind) {
+                case GOOD :
+                    const secondRes = nextFunc(firstResult.payload)
+                    resolve(secondRes)
+                    break
+                case BAD :
+                    resolve(firstResult)
+                    break
+                default:
+                    resolve(firstResult)
+                    break
+
+            }
+        })
     }
 }
 

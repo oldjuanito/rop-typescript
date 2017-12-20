@@ -4,7 +4,19 @@ function areOptionsDifferent(currOpts: HTMLOptionsCollection, formOpts: DropDown
     let missingItem = false
     for (let optIdx = 0; optIdx < currOpts.length && !missingItem; optIdx++) {
         const currOpt = currOpts.item(optIdx)
-        missingItem = formOpts[optIdx].index !== currOpt.value
+        if (formOpts[optIdx]) {
+            missingItem = formOpts[optIdx].index !== currOpt.value
+        } else {
+            missingItem = true
+        }
+    }
+    for (let optIdx = 0; optIdx < formOpts.length && !missingItem; optIdx++) {
+        if (currOpts.length > optIdx) {
+            missingItem = formOpts[optIdx].index !== currOpts[optIdx].value
+        } else {
+            missingItem = true
+        }
+
     }
     return missingItem
 }

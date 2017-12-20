@@ -18,37 +18,6 @@ export function addValueChgListener(elem: HTMLInputElement | HTMLSelectElement, 
     )
 }
 
-export function wireTextInputStep<Context, ViewType>(formContainerId: string,
-                                             propNames: PropInfoTxtInput[],
-                                             callbackUiGetter: (context: Context) => ((msg: InputMsg) => void),
-                                             viewGetter: ((context: Context) => ViewType),
-                                             viewSetter: ((context: Context, view: ViewType) => Context)): SyncWorkflowStep<Context> {
-
-    const f = (context: Context) => {
-
-        const view = viewGetter(context)
-        for (let propNameIdx = 0; propNameIdx < propNames.length; propNameIdx++) {
-            const prop = propNames[propNameIdx];
-
-            // const elemLbl = document.createElement('label')
-            // elemLbl.htmlFor = formContainerId + '_' + prop.name
-
-            const elem = document.getElementById(formContainerId + '_' + prop.name) as HTMLInputElement
-
-            addValueChgListener(elem, prop.name, callbackUiGetter(context))
-            view[prop.name] = elem
-        }
-
-        return pass(viewSetter(context, view))
-
-    }
-    const step = createStepFunc<Context, Context, Context>({
-            func: f,
-            name: 'wireTextInputStep'
-        }
-    )
-    return step
-}
 export function createTextInputStep<Context>(formContainerId: string,
                                              propNames: PropInfoTxtInput[],
                                              callbackUi: (msg: InputMsg) => void,

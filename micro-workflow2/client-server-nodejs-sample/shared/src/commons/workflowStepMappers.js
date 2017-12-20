@@ -112,7 +112,7 @@ function mapPromiseResultState(typeInput, typeOutput, func, initialState) {
     }
     else {
         return rop_1.fail([{
-                errorDescription: "wrong input context, expecting " + typeInput,
+                errorDescription: "wrong input context, expecting " + typeInput + ", got " + initialState.kind,
                 propName: 'mapPromiseState'
             }]);
     }

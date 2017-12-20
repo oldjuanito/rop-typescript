@@ -15,13 +15,18 @@ function clearTableBody(table: HTMLTableElement) {
 
 }
 
+export interface RendererHash<C> {
+    [name: string]: (val: {}, context: C) => HTMLElement
+}
 export interface SetTableDataViewValuesStepParams<Context> {
     viewGetter: (context: Context) => HTMLTableElement,
-    renditionGetter: (context: Context) => {}[]
+    renditionGetter: (context: Context) => {}[],
+    specialRenderers?: RendererHash<Context>
 }
 
 export function setTableDataViewValuesStep<Context>(parameters: SetTableDataViewValuesStepParams<Context>): SyncWorkflowStep<Context> {
     let {viewGetter, renditionGetter} = parameters
+    const specialRenderers = parameters.specialRenderers ?  parameters.specialRenderers :  {}
     const f = (context: Context) => {
 
         const errors: PropertyError[] = []
@@ -46,7 +51,11 @@ export function setTableDataViewValuesStep<Context>(parameters: SetTableDataView
                 const propName = propsToUse[propNameIdx]
                 if (row.hasOwnProperty(propName)) {
                     const newCell = newRow.insertCell()
-                    newCell.innerText = row[propName]
+                    if (specialRenderers[propName]) {
+                        newCell.appendChild(specialRenderers[propName](row, context))
+                    } else {
+                        newCell.innerText = row[propName]
+                    }
                 }
                 else {
                     errors.push({errorDescription: `cell cannot use ${propName} as property value. It does not exist in ${JSON.stringify(row)}.`})
