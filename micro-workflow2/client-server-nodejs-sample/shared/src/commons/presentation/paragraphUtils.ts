@@ -6,6 +6,10 @@ function areElementsDifferent(currElems: HTMLCollection, newElems: HTMLElement[]
         const currOpt = newElems[optIdx]
         missingItem = currElems.length > optIdx ?  currElems[optIdx].innerHTML !== currOpt.innerHTML : true
     }
+    for (let optIdx = 0; optIdx < currElems.length && !missingItem; optIdx++) {
+        const currOpt = currElems[optIdx]
+        missingItem = newElems.length > optIdx ?  newElems[optIdx].innerHTML !== currOpt.innerHTML : true
+    }
     return missingItem
 }
 

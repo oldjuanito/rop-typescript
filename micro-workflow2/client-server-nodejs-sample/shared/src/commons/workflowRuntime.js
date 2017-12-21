@@ -37,24 +37,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var rop_1 = require("./rop/rop");
 var workflowStep_1 = require("./workflowStep");
-// export function RunWorkflow<C>(instances: WorkflowStep<C>[], contextData: C, middleWare: MiddleWareFunc<C>[] = []): ResultForWorkflow<C> {
-//     let lastResult: ResultForWorkflow<C> = pass(contextData)
-//     let currErrors: PropertyError[] = []
-//     let currContextData: C = contextData
-//     for (let stepIdx = 0; stepIdx < instances.length && currErrors.length === 0; stepIdx++) {
-//         const currStepInstance = instances[stepIdx]
-//         lastResult = currStepInstance.stepInstanceApply(currContextData, middleWare)
-//         switch (lastResult.kind) {
-//             case GOOD:
-//                 currContextData = lastResult.payload
-//                 break
-//             default:
-//                 currErrors = lastResult.error
-//                 break
-//         }
-//     }
-//     return lastResult
-// }
 function runMiddleware(middleWare, step, currContextData, lastResult) {
     for (var middleWareIdx = 0; middleWareIdx < middleWare.length; middleWareIdx++) {
         middleWare[middleWareIdx]({ stepName: step.name }, currContextData, lastResult);

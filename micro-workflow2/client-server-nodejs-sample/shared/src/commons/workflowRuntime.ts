@@ -5,24 +5,6 @@ import {
     WorkflowStep
 } from './workflowStep'
 
-// export function RunWorkflow<C>(instances: WorkflowStep<C>[], contextData: C, middleWare: MiddleWareFunc<C>[] = []): ResultForWorkflow<C> {
-//     let lastResult: ResultForWorkflow<C> = pass(contextData)
-//     let currErrors: PropertyError[] = []
-//     let currContextData: C = contextData
-//     for (let stepIdx = 0; stepIdx < instances.length && currErrors.length === 0; stepIdx++) {
-//         const currStepInstance = instances[stepIdx]
-//         lastResult = currStepInstance.stepInstanceApply(currContextData, middleWare)
-//         switch (lastResult.kind) {
-//             case GOOD:
-//                 currContextData = lastResult.payload
-//                 break
-//             default:
-//                 currErrors = lastResult.error
-//                 break
-//         }
-//     }
-//     return lastResult
-// }
 
 function runMiddleware<C>(middleWare: AsyncMiddleWareFunc<C>[], step: StepTransitionFunc<C>, currContextData: C,
                        lastResult: ResultForWorkflow<C>) {

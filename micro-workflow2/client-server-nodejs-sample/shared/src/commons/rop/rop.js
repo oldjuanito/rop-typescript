@@ -58,6 +58,14 @@ var RopBind = /** @class */ (function () {
         if (middleware === void 0) { middleware = []; }
         return new RopBind(pass(input), middleware);
     };
+    RopBind.startAsyncRop = function (input, middleware) {
+        if (middleware === void 0) { middleware = []; }
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, new RopBind(pass(input), middleware)];
+            });
+        });
+    };
     RopBind.prototype.then = function (nextFunc) {
         var nextResult = this.thenResult(nextFunc);
         return new RopBind(nextResult);

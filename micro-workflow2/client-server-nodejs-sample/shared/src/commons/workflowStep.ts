@@ -1,4 +1,5 @@
 import { ResultForWorkflow } from './editTypes'
+import { fail, PropertyError } from './rop/rop'
 
 export type ApplierFunc<C> = (context: C) => ResultForWorkflow<C>
 export type AsyncApplierFunc<C> = (context: C) => Promise<ResultForWorkflow<C>>
@@ -6,7 +7,11 @@ export type AsyncApplierFunc<C> = (context: C) => Promise<ResultForWorkflow<C>>
 export type AsyncMiddleWareFunc<C> = (stepInfo: { stepName: string }, context: C, result?: ResultForWorkflow<C>) => void
 
 
-export type StepResult<C> = Promise<ResultForWorkflow<C>> | ResultForWorkflow<C>
+export type AsyncStepResult<C> = Promise<ResultForWorkflow<C>>
+export function failAsync<C>(errors: PropertyError[]): AsyncStepResult<C> {
+    return new Promise( resolve => resolve(fail(errors)) )
+}
+export type StepResult<C> = AsyncStepResult<C> | ResultForWorkflow<C>
 
 export function isAsyncResult<C>(s: StepResult<C>): s is Promise<ResultForWorkflow<C>> {
     return (<Promise<ResultForWorkflow<C>>>s).then !== undefined;
