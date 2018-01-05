@@ -1,41 +1,36 @@
-import { EditProp } from '../editTypes'
+import { ResultForWorkflow } from '../editTypes'
 import { isStrDigitsOnly } from './stringValidatorUtils'
+import { fail, pass } from '../rop/rop'
 
-type BranchNumberProp = EditProp< number >
+type BranchNumberProp =  number
 const MAX_CHARS = 4
 
 export const branchNumberPropCreateStep =
-    (propName: string, context: BranchNumberProp): BranchNumberProp => {
+    (propName: string, context: string): ResultForWorkflow<BranchNumberProp> => {
 
-        const rawVal = context.currRendition
+        const rawVal = context
         if (rawVal === null || rawVal === '') {
-            return {...context, errors: [
+            return fail([
                     { propName, errorDescription: `Must not be blank` } ]
-            }
+            )
         }
         if (rawVal.length > MAX_CHARS) {
-            return {...context, errors: [
+            return fail([
                     {propName, errorDescription: `Must not exceed ${MAX_CHARS} digits`}]
-            }
+            )
         }
         if (!isStrDigitsOnly(rawVal)) {
-            return {...context, errors: [
+            return fail([
                     {propName, errorDescription: `Must be digits only`}]
-            }
+            )
         }
         const numVal = parseInt(rawVal, 0)
         if (isNaN(numVal)) {
-            return {...context, errors: [
+            return fail([
                     {propName, errorDescription: `Must be a valid number`}]
-            }
+            )
         }
-        return ({...context, goodVal: numVal})
+        return pass( numVal  )
 
     }
-export function createBranchNumberProp(currRendition: string): BranchNumberProp {
-    return {
-        errors: [],
-        createFunc: branchNumberPropCreateStep,
-        currRendition
-    }
-}
+

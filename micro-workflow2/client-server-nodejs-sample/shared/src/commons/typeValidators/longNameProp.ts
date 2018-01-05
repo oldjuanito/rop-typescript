@@ -1,27 +1,22 @@
-import { EditProp } from '../editTypes'
+import {  ResultForWorkflow } from '../editTypes'
+import { fail, pass } from '../rop/rop'
 
-type LongNameProp = EditProp< string >
+type LongNameProp =  string
 const MAX_CHARS = 100
 export const longNamePropCreateStep =
-    (propName: string, context: LongNameProp): LongNameProp => {
+    (propName: string, context: string): ResultForWorkflow<LongNameProp> => {
         
-        const rawVal = context.currRendition
+        const rawVal = context
         if (rawVal === null || rawVal === '') {
-            return {...context, errors: [
+            return fail([
                 { propName, errorDescription: `Must not be blank` } ]
-            }
+            )
         }
         if (rawVal.length > MAX_CHARS) {
-            return {...context, errors: [
+            return fail([
                     {propName, errorDescription: `Must not exceed ${MAX_CHARS} characters`}]
-            }
+            )
         }
-        return ({...context, goodVal: rawVal})
+        return pass(rawVal)
     }
-export function createLongNameProp(currRendition: string): LongNameProp {
-    return { 
-        errors: [], 
-        createFunc: longNamePropCreateStep,
-        currRendition
-    }
-}
+

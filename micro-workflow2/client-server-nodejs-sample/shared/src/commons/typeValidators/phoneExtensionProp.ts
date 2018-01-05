@@ -1,35 +1,30 @@
-import { EditProp } from '../editTypes'
+import {  ResultForWorkflow } from '../editTypes'
 import { isStrDigitsOnly } from './stringValidatorUtils'
+import { fail, pass } from '../rop/rop'
 
-type PhoneExtensionProp = EditProp< string >
+type PhoneExtensionProp =  string
 const MAX_CHARS = 4
 
 export const phoneExtensionPropCreateStep =
-    (propName: string, context: PhoneExtensionProp): PhoneExtensionProp => {
+    (propName: string, context: string): ResultForWorkflow<PhoneExtensionProp> => {
 
-        const rawVal = context.currRendition
+        const rawVal = context
         if (rawVal === null || rawVal === '') {
-            return {...context, errors: [
+            return fail([
                     { propName, errorDescription: `Must not be blank` } ]
-            }
+            )
         }
         if (rawVal.length > MAX_CHARS) {
-            return {...context, errors: [
+            return fail([
                     {propName, errorDescription: `Must not exceed ${MAX_CHARS} digits`}]
-            }
+            )
         }
         if (!isStrDigitsOnly(rawVal)) {
-            return {...context, errors: [
+            return fail([
                     {propName, errorDescription: `Must be digits only`}]
-            }
+            )
         }
-        return ({...context, goodVal: rawVal})
+        return pass(rawVal)
 
     }
-export function createPhoneExtensionProp(currRendition: string): PhoneExtensionProp {
-    return {
-        errors: [],
-        createFunc: phoneExtensionPropCreateStep,
-        currRendition
-    }
-}
+

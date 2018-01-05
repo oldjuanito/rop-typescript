@@ -1,30 +1,25 @@
-import { EditProp } from '../editTypes'
+import {  ResultForWorkflow } from '../editTypes'
 import * as bn from 'bignumber.js'
+import { fail, pass } from '../rop/rop'
 
-type PositiveNumProp = EditProp< bn.BigNumber >
+export type PositiveNumProp =  bn.BigNumber
 export const positiveNumCreateStep =
-    (propName: string, context: PositiveNumProp): PositiveNumProp => {
+    (propName: string, context: string): ResultForWorkflow<PositiveNumProp> => {
         
-        const amt = new bn.BigNumber(context.currRendition)
+        const amt = new bn.BigNumber(context)
         if (amt.isNaN() || amt.lessThan(0)) {
-            return {...context, errors: [
+            return fail([
                 { propName, errorDescription: `Invalid Number` } ] 
-            }
+            )
         }
         if (amt.lessThan(0)) {
-            return {...context, errors: [
+            return fail([
                 { propName, errorDescription: `Number must be greater or equal to zero` } ] 
-            }
+            )
         } else {
 
-            return ({...context, goodVal: amt } )
+            return pass( amt  )
         }
 
     }
-export function createPositiveNumEditProp(currRendition: string): PositiveNumProp {
-    return { 
-        errors: [], 
-        createFunc: positiveNumCreateStep,
-        currRendition
-    }
-}
+

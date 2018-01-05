@@ -1,10 +1,10 @@
-import { InputMsg, ResultForWorkflow } from '../../../../shared/src/commons/editTypes'
+import { InputMsg, NoEventMsg, ResultForWorkflow } from '../../../../shared/src/commons/editTypes'
 import { BAD, GOOD, PropertyError } from '../../../../shared/src/commons/rop/rop'
 import {
     PropInfoTxtDisplay, PropInfoTxtInput,
     PropOptsDisplay, SimpleActionInfo
 } from '../../../../shared/src/commons/presentation/viewTypes'
-import { SyncWorkflowStep, WorkflowStep } from '../../../../shared/src/commons/workflowStep'
+import { AsyncMiddleWareFunc, SyncWorkflowStep, WorkflowStep } from '../../../../shared/src/commons/workflowStep'
 import { buildRenderWorkflowSteps } from '../workflows/renderWorkflow'
 import { buildWireViewElementsWorkflow } from '../workflows/wireViewElementsWorkflow'
 import { runAsyncWorkflow2, runWorkflow2 } from '../../../../shared/src/commons/workflowRuntime'
@@ -47,20 +47,21 @@ export interface BasicComponent<DomainType,
     readonly msgSender: (msg: InputMsg) => void,
     readonly currErrors: PropertyError[],
     readonly viewDescriptions: ViewDescription<BasicComponent<DomainType,
-        InputType, ViewType, SupportingDataType>>
+        InputType, ViewType, SupportingDataType>>,
+    readonly currMsg: InputMsg,
 }
 
 export class BasicScreen<DomainType,
     InputType, ViewType, SupportingDataType> {
 
-    private currentContext: BasicComponent<DomainType,
+    protected currentContext: BasicComponent<DomainType,
         InputType, ViewType, SupportingDataType>
     private renderSteps: SyncWorkflowStep<BasicComponent<DomainType,
         InputType, ViewType, SupportingDataType>>[]
 
-    constructor(intializationData: BasicComponentInitialization<DomainType,
-        InputType, ViewType, SupportingDataType>) {
-        this.onUiMsg = this.onUiMsg.bind(this)
+    protected preMiddleware:AsyncMiddleWareFunc<BasicComponent<DomainType,
+        InputType, ViewType, SupportingDataType>>[] = []
+    constructor() {
         this.startViewWireWorkflow = this.startViewWireWorkflow.bind(this)
         this.startComponentSetupWorkflow = this.startComponentSetupWorkflow.bind(this)
         this.afterSetupWorkflowCompletes = this.afterSetupWorkflowCompletes.bind(this)
@@ -68,20 +69,19 @@ export class BasicScreen<DomainType,
         this.startScreenWorkflow = this.startScreenWorkflow.bind(this)
         this.startServerWorkflow = this.startServerWorkflow.bind(this)
         this.afterWorkflowCompleted = this.afterWorkflowCompleted.bind(this)
+        this.updateCurrMsg = this.updateCurrMsg.bind(this)
         this.doRender = this.doRender.bind(this)
 
-        const newIntializationData = {...intializationData, msgSender: this.onUiMsg}
-        this.startViewWireWorkflow(newIntializationData)
 
     }
 
-    onUiMsg(msg: InputMsg) {
-        // TODO: maybe the onUIMSg belongs to the caller, so NO override "msgSender: this.onUiMsg" ?
-    }
 
+    protected updateCurrMsg(msg: InputMsg) {
+        this.currentContext = {... this.currentContext, currMsg: msg}
+    }
     protected startScreenWorkflow(steps: SyncWorkflowStep<BasicComponent<DomainType,
         InputType, ViewType, SupportingDataType>>[]) {
-        const result = runWorkflow2(steps, this.currentContext)
+        const result = runWorkflow2(steps, this.currentContext, this.preMiddleware)
         this.afterWorkflowCompleted(result)
     }
     protected startServerWorkflow(steps: WorkflowStep<BasicComponent<DomainType,
@@ -89,7 +89,7 @@ export class BasicScreen<DomainType,
         let finalResultPromise = runAsyncWorkflow2(steps, this.currentContext)
         finalResultPromise.then(this.afterWorkflowCompleted)
     }
-    private startViewWireWorkflow(intializationData: BasicComponentInitialization<DomainType,
+    protected startViewWireWorkflow(intializationData: BasicComponentInitialization<DomainType,
         InputType, ViewType, SupportingDataType>) {
         const wiringViewSteps = buildWireViewElementsWorkflow(intializationData.viewDescriptions)
         const result = runWorkflow2(wiringViewSteps, intializationData)
@@ -105,6 +105,12 @@ export class BasicScreen<DomainType,
                 console.error(result)
                 break
         }
+    }
+    protected startViewWireWorkflowWithVdom(intializationData: BasicComponentInitialization<DomainType,
+        InputType, ViewType, SupportingDataType>,
+                                            renderFunc: () => void ) {
+        renderFunc()
+        requestAnimationFrame((_) => this.startViewWireWorkflow(intializationData))
     }
     private startComponentSetupWorkflow(intializationData: BasicComponentInitialization<DomainType,
         InputType, ViewType, SupportingDataType>) {
@@ -133,9 +139,10 @@ export class BasicScreen<DomainType,
             domain: intializationData.domain,
             view: intializationData.view as ViewType,
             msgSender: intializationData.msgSender as ((msg: InputMsg) => void),
-            viewDescriptions: intializationData.viewDescriptions as ViewDescription<BasicComponent<DomainType,
+            viewDescriptions: intializationData.viewDescriptions as any as ViewDescription<BasicComponent<DomainType,
                 InputType, ViewType, SupportingDataType>>,
-            currErrors: intializationData.currErrors
+            currErrors: intializationData.currErrors,
+            currMsg: NoEventMsg
 
         }
         if (intializationData.extraInitializationMap) {
@@ -150,7 +157,7 @@ export class BasicScreen<DomainType,
         InputType, ViewType, SupportingDataType>>) {
         switch (result.kind) {
             case GOOD:
-                this.currentContext = result.payload
+                this.currentContext = {... result.payload, currErrors: []}
                 break
             case BAD:
                 this.currentContext = {... this.currentContext, currErrors: result.error}
